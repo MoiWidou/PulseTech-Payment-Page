@@ -8,6 +8,7 @@ import { IoClose } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 
 export default function Sidebar() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -19,7 +20,7 @@ export default function Sidebar() {
     
     const handleSignOut = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/auth/logout", {
+            const res = await fetch(`${API_URL}/auth/logout`, {
                 method: "POST",
                 credentials: "include", // important: sends cookies to the server
             });
