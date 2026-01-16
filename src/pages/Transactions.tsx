@@ -50,6 +50,7 @@ const formatDateTime = (dateStr: string) => {
 
 const Transactions: React.FC = () => {
 
+    const API_URL = import.meta.env.VITE_API_URL;
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(false);
     const [_error, setError] = useState<string | null>(null);
@@ -121,7 +122,7 @@ const Transactions: React.FC = () => {
             });
 
             const token = localStorage.getItem("access_token"); // or from cookie
-            const res = await fetch(`http://127.0.0.1:8000/transactions?${params.toString()}`, {
+            const res = await fetch(`${API_URL}/transactions?${params.toString()}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

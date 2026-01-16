@@ -29,6 +29,7 @@ interface FundTransfer{
 }
 
 const Landing: React.FC = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
 
     // Hiding the balance
     const [isBalanceVisible, setIsBalanceVisible] = useState(true);
@@ -70,7 +71,7 @@ const Landing: React.FC = () => {
             try {
                 const [paymentRes, fundRes] = await Promise.all([
                     fetch(
-                        `http://127.0.0.1:8000/payment?start=${today}&end=${today}`,
+                        `${API_URL}/payment?start=${today}&end=${today}`,
                         {
                             headers: {
                                 "Accept": "application/json",
@@ -79,7 +80,7 @@ const Landing: React.FC = () => {
                         }
                     ),
                     fetch(
-                        `http://127.0.0.1:8000/fund-transfer?start=${today}&end=${today}`,
+                        `${API_URL}/fund-transfer?start=${today}&end=${today}`,
                         {
                             headers: {
                                 "Accept": "application/json",
