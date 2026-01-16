@@ -127,7 +127,6 @@ export default function Sidebar() {
                 </nav>
 
                 {/* Client Info */}
-                <div ref={clientRef} >
 
                 {showChangePass && (
                     <button
@@ -141,14 +140,13 @@ export default function Sidebar() {
                         Change Password
                     </button>
                 )}
-                </div>
 
-                <div className="mt-auto bg-[#132440] rounded-lg p-5">
+                <div ref={clientRef} className="mt-auto bg-[#132440] rounded-lg p-5">
                     
                     <div className="flex items-center gap-3 px-3 mb-3" >
                         <div 
                             onClick={handleToggleChangePass}
-                            className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm"
+                            className="cursor-pointer w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm"
                         >
                             {clientInitials}
                         </div>
