@@ -64,7 +64,6 @@ const Login: React.FC = () => {
             <h1 className="text-3xl font-bold text-slate-800 tracking-tight">
                 Pulse<span className="text-blue-600">Tech</span>
             </h1>
-            <p className="text-slate-500 mt-2 text-sm">Precision analytics at your fingertips</p>
             </div>
 
             {error && (
