@@ -6,12 +6,15 @@ import Transactions from "../pages/Transactions";
 import Withdrawal from "../pages/Withdrawal";
 import Login from "../pages/Login";
 import ChangePass from "../pages/ChangePass";
+import ProtectedRoute from "../components/auth_guard/ProtectedRoute"
+import QueuePage from "../pages/QueuePage"
 
 export default function Layout() {  
     const location = useLocation();
 
+    const HIDE_SIDEBAR_ROUTES = ["/login", "/changepass"];
     // hide sidebar on login page
-    const hideSidebar = location.pathname === "/login" || location.pathname === "/changepass";
+    const hideSidebar = HIDE_SIDEBAR_ROUTES.includes(location.pathname);
 
     return (
         <div className="h-screen flex overflow-hidden">
@@ -21,10 +24,13 @@ export default function Layout() {
                 <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/" element={<Navigate to="/login" replace />} />
-                    <Route path="/landing" element={<Landing />} />
-                    <Route path="/transactions" element={<Transactions />} />
-                    <Route path="/withdrawal" element={<Withdrawal />} />
-                    <Route path="/changepass" element={<ChangePass />} />
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="/landing" element={<Landing />} />
+                        <Route path="/transactions" element={<Transactions />} />
+                        <Route path="/withdrawal" element={<Withdrawal />} />
+                        <Route path="/changepass" element={<ChangePass />} />
+                        <Route path="/download-queue" element={< QueuePage/>} />
+                    </Route>
                 </Routes>
             </div>
         </div>

@@ -28,6 +28,8 @@ export default function Sidebar() {
             if (!res.ok) throw new Error("Logout failed");
 
             navigate("/login"); // redirect after successful logout
+            localStorage.removeItem('accessToken');
+
         } catch (err) {
             console.error(err);
             alert("Logout failed. Please try again.");

@@ -67,7 +67,7 @@ const ChangePass = () => {
             <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
 
             {/* --- Card Container --- */}
-            <div className="relative z-10 w-full max-w-[400px] px-6 animate-fade-in">
+            <div className="relative z-10 w-full max-w-100 px-6 animate-fade-in">
                 <div className="bg-white/80 backdrop-blur-xl border border-white/20 p-8 rounded-[2.5rem] shadow-2xl shadow-blue-100/50">
                 
                 {/* Header */}
@@ -142,8 +142,8 @@ const ChangePass = () => {
 
                 {/* Footer Link */}
                 <div className="mt-8 text-center">
-                    <Link to="/landing" className="inline-flex items-center text-sm text-slate-400 hover:text-blue-600 transition-colors font-medium">
-                        <FiArrowLeft className="mr-2" />Back
+                    <Link to="/landing" className="inline-flex items-center text-sm text-slate-400 hover:text-blue-600 transition-colors font-medium group">
+                        <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" />Back
                     </Link>
                 </div>
                 </div>  
@@ -151,12 +151,12 @@ const ChangePass = () => {
 
             {/* --- Success Modal --- */}
             {showSuccessModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 overflow-hidden">
+                <div className="fixed inset-0 z-100 flex items-center justify-center px-4 overflow-hidden">
                     {/* Overlay */}
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade-in"></div>
                     
                     {/* Modal Content */}
-                    <div className="relative bg-white rounded-[2.5rem] p-8 w-full max-w-[340px] shadow-2xl animate-pop-in text-center">
+                    <div className="relative bg-white rounded-[2.5rem] p-8 w-full max-w-85 shadow-2xl animate-pop-in text-center">
                         <div className="flex justify-center mb-4">
                             <FiCheckCircle className="text-blue-600" size={64} />
                         </div>
