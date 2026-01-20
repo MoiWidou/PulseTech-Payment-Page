@@ -111,6 +111,7 @@ const Withdrawal: React.FC = () => {
     // Summary Calculations
     function calculateFee(amount: number): number {
         if (amount <= 0) return 0;
+        if (formData.method === "pesonet") return 0
         const blocks = Math.ceil(amount / 50000); // each 50k counts as 1 block
         return blocks * 5; // 5 pesos per block
     }
