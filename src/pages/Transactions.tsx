@@ -112,7 +112,8 @@ const Transactions: React.FC = () => {
     };
 
     const filteredTransactions = dummyTransactions.filter((tx) => {
-        const matchesStatus = appliedStatus ? tx.status === appliedStatus : true;
+        const statusUpper = tx.status.toUpperCase(); 
+        const matchesStatus = appliedStatus ? statusUpper === appliedStatus : true;
         const matchesType = appliedType ? tx.type === appliedType : true;
         const matchesDate = appliedDate ? tx.transactionDate.includes(appliedDate) : true;
         return matchesStatus && matchesType && matchesDate;
