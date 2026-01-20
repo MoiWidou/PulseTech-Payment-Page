@@ -365,7 +365,7 @@ const Transactions: React.FC = () => {
                             className="relative w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md shadow-sm transition font-semibold text-sm h-10 flex justify-center items-center"
                         >
                             <span>Download</span>
-                            <HiChevronDown size={16} className="absolute md:right-1 lg:right-4" />
+                            <HiChevronDown size={16} className="absolute right-4 md:right-1 lg:right-4" />
                         </button>
 
                         {downloadMenuOpen && (
