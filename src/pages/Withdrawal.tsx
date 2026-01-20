@@ -227,7 +227,7 @@ const Withdrawal: React.FC = () => {
 
     return (
         <div className="p-4 md:p-8">
-            <h1 className="text-3xl font-bold mb-6 mt-12 md:mt-0">Withdraw Details</h1>
+            <h1 className="text-3xl font-bold mb-6 mt-12 lg:mt-0">Withdraw Details</h1>
 
             <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
 

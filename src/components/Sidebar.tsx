@@ -75,7 +75,7 @@ export default function Sidebar() {
     return (
         <>
             {/* Hamburger Button on small screens */}
-            <div className="md:hidden fixed top-4 left-4 z-50">
+            <div className="lg:hidden fixed top-4 left-4 z-50">
                 <button
                     onClick={() => setMobileOpen(!mobileOpen)}
                     className="text-gray-700 bg-white p-2 rounded-lg shadow"
@@ -88,9 +88,9 @@ export default function Sidebar() {
             <div
                 className={`
                     h-full w-64 bg-white text-white flex flex-col p-4
-                    fixed top-0 left-0 z-40 md:relative md:translate-x-0
+                    fixed top-0 left-0 z-40 lg:relative lg:translate-x-0
                     transition-transform duration-300 ease-in-out
-                    ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+                    ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
                 `}
             >
                 {/* Logo */}

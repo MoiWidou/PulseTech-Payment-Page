@@ -253,7 +253,7 @@ const DownloadQueueUI: React.FC = () => {
                         <FileText size={20} className="text-slate-600" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-slate-800 leading-tight">{job.name}</h3>
+                        <h3 className="text-xs sm:text-base font-bold text-slate-800 leading-tight">{job.name}</h3>
                         <p className="text-xs text-slate-500">{job.createdAt}</p>
                     </div>
                     </div>
@@ -281,6 +281,18 @@ const DownloadQueueUI: React.FC = () => {
                 </div>
             ))}
             </div>
+            <div className="md:hidden space-y-4">
+            {filteredJobs.length > 0 ? (
+                filteredJobs.map((job) => (
+                <div key={job.id} className="">
+                    {/* ...mobile card content */}
+                </div>
+                ))
+            ) : (
+                <div className="p-12 text-center text-slate-400">No downloads in queue.</div>
+            )}
+            </div>
+
         </div>
         </div>
     );

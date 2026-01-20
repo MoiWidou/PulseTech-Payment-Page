@@ -144,7 +144,7 @@ const Landing: React.FC = () => {
     );
 
     return (
-        <div className="mt-12 md:mt-0 p-4 md:p-8 bg-slate-50 min-h-screen">
+        <div className="mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 min-h-screen">
             {/* Header */}
             <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-slate-800">Welcome, Client</h1>
             {error && (

@@ -80,8 +80,19 @@ const Transactions: React.FC = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [downloadQueue, _setDownloadQueue] = useState<DownloadJob[]>([]);
     const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
-
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
     
+    const openModal = (tx: Transaction) => {
+        setSelectedTransaction(tx);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setSelectedTransaction(null);
+    };
+
     const handleQueueDownload = () => {
         if (currentTransactions.length === 0) return;
 
@@ -222,7 +233,7 @@ const Transactions: React.FC = () => {
 
     return (
         
-        <div className="md:mt-0 p-4 md:p-8 bg-slate-50 h-full flex flex-col overflow-hidden">
+        <div className="md:mt-12 lg:mt-0 p-4 md:p-8 bg-slate-50 h-full flex flex-col overflow-hidden">
             {notification && (
                 <div className="fixed top-6 right-6 z-60 min-w-[320px] max-w-md animate-in fade-in slide-in-from-right-8 duration-300">
                     <div className="bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden flex items-stretch">
@@ -442,29 +453,110 @@ const Transactions: React.FC = () => {
 
         {/* Mobile Card View */}
         <div className="md:hidden flex-1 overflow-y-auto space-y-4">
-            {currentTransactions.map((tx) => (
-                <div key={tx.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <div className="flex justify-between items-start mb-3">
-                        <div>
-                            <p className="text-[10px] text-gray-400 font-mono uppercase tracking-tighter">{tx.id}</p>
-                            <p className="font-bold text-slate-800">{tx.reference}</p>
-                        </div>
-                        <span className={`px-3 py-1 text-[10px] font-bold rounded-full border ${getStatusClass(tx.status)}`}>
-                            {tx.status}
-                        </span>
+        {currentTransactions.map((tx) => (
+            <div key={tx.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div className="flex justify-between items-start mb-3">
+                    <div>
+                    <p className="text-[10px] text-gray-400 font-mono uppercase tracking-tighter">{tx.id}</p>
+                    <p className="font-bold text-slate-800">{tx.reference}</p>
                     </div>
-                    <div className="flex justify-between items-end">
-                        <div className="text-xs text-gray-500">
-                            <p>{tx.type}</p>
-                            <p className="text-[10px]">{new Date(tx.transactionDate).toLocaleString()}</p>
-                        </div>
-                        <p className={`text-lg font-bold ${tx.type === "Cash In" ? "text-green-600" : "text-red-600"}`}>
-                            {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString()}
-                        </p>
+
+                    {/* Right side: status badge + triple-dot */}
+                    <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 text-[10px] font-bold rounded-full border ${getStatusClass(tx.status)}`}>
+                        {tx.status}
+                    </span>
+
+                    <button
+                        onClick={() => openModal(tx)}
+                        className="p-1 text-gray-500 hover:text-gray-700"
+                        aria-label="View Details"
+                    >
+                        ⋮
+                    </button>
                     </div>
                 </div>
-            ))}
+
+                <div className="flex justify-between items-end">
+                    <div className="text-xs text-gray-500">
+                    <p>{tx.type}</p>
+                    <p className="text-[10px]">{new Date(tx.transactionDate).toLocaleString()}</p>
+                    </div>
+                    <p className={`text-lg font-bold ${tx.type === "Cash In" ? "text-green-600" : "text-red-600"}`}>
+                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString()}
+                    </p>
+                </div>
+            </div>
+        ))}
         </div>
+
+        {modalOpen && selectedTransaction && (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div>
+                    <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Transaction Details</h2>
+                    {/* OPTION 1: Sub-header (Uncomment if you want it at the top) */}
+                    {/* <p className="text-[10px] text-slate-400 font-mono mt-0.5">{selectedTransaction.id}</p> */}
+                </div>
+                <button
+                    onClick={closeModal}
+                    className="p-1.5 rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
+                >
+                    <RxCross2 size={20} />
+                </button>
+            </div>
+
+            <div className="p-6">
+                {/* Primary Info: Amount & Status */}
+                <div className="text-center mb-8">
+                    <p className="text-xs font-medium text-slate-400 uppercase mb-1">Total Amount</p>
+                    <div className={`text-3xl font-bold ${selectedTransaction.type === "Cash In" ? "text-emerald-600" : "text-slate-900"}`}>
+                        {selectedTransaction.type === "Cash In" ? "+" : "-"}₱{selectedTransaction.amount.toLocaleString()}
+                    </div>
+                    <div className="mt-3 flex justify-center">
+                        <span className={`px-4 py-1 rounded-full text-[11px] font-bold border ${getStatusClass(selectedTransaction.status)}`}>
+                            {selectedTransaction.status}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Details Grid */}
+                <div className="grid grid-cols-1 gap-y-4">
+                    {[
+                        { label: "Reference Number", value: selectedTransaction.reference },
+                        { label: "QRPH Reference", value: selectedTransaction.qrphReference || "N/A" },
+                        { label: "Transaction Type", value: selectedTransaction.type },
+                        { label: "Description", value: selectedTransaction.description },
+                        { label: "Transaction Date", value: formatDateTime(selectedTransaction.transactionDate) },
+                        { label: "Processed Date", value: formatDateTime(selectedTransaction.processedDate) },
+                    ].map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-start border-b border-slate-50 pb-2 last:border-0">
+                            <span className="text-xs font-medium text-slate-400">{item.label}</span>
+                            <span className="text-xs font-semibold text-slate-700 text-right max-w-[200px] break-all">
+                                {item.value}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* OPTION 2: Technical Metadata Section (Recommended) */}
+                <div className="mt-6 pt-4 border-t border-slate-100">
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-[10px] font-medium text-slate-300 uppercase tracking-widest">Transaction ID</span>
+                        <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded select-all">
+                            {selectedTransaction.id}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
+
+
 
             {/* Pagination */}
             <div className="flex flex-col md:flex-row justify-between items-center mt-6 gap-4 border-b border-black/30 pb-4 pt-4">
