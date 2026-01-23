@@ -17,7 +17,7 @@ const Login: React.FC = () => {
         setError("");
 
         try {
-            const res = await fetch(`${API_URL}/auth/login`, {
+            const res = await fetch(`https://sandbox.paylinkto.site/dashboard/login`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
