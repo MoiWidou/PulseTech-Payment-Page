@@ -6,15 +6,17 @@ import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight, MdKeyboardArrowR
 import { useNavigate } from "react-router-dom";
 
 interface Transaction {
-    id: string;
-    reference: string;
-    qrphReference: string;
     amount: number;
-    type: "Cash In" | "Cash Out" | "Withdrawal";
-    status: "Success" | "Pending" | "Failed" | "Closed";
-    description: string;
-    transactionDate: string;
-    processedDate: string;
+    created_at: string;
+    error?: string;
+    fees: number;
+    instapay_reference: string;
+    merhant_id: string;
+    paid_at: string;
+    reference_id: string;
+    status: "SUCCESS" | "PENDING" | "FAILED" | "CLOSED";
+    transaction_id: string;
+    type: "PAYMENT" | "FUND_TRANSFER";
 }
 
 interface DownloadJob {
@@ -36,25 +38,25 @@ const formatDateTime = (dateStr: string) => {
     return `${y}-${m}-${day} ${h}:${min}:${s}`;
 };
 
-const dummyTransactions: Transaction[] = Array.from({ length: 50 }, (_, i) => {
-    const transactionDate = new Date();
+// const dummyTransactions: Transaction[] = Array.from({ length: 50 }, (_, i) => {
+//     const transactionDate = new Date();
 
-    // Random number of minutes between 60 and 120 (1-2 hours)
-    const randomMinutes = 60 + Math.floor(Math.random() * 61);
-    const processedDate = new Date(transactionDate.getTime() + randomMinutes * 60 * 1000);
+//     // Random number of minutes between 60 and 120 (1-2 hours)
+//     const randomMinutes = 60 + Math.floor(Math.random() * 61);
+//     const processedDate = new Date(transactionDate.getTime() + randomMinutes * 60 * 1000);
 
-    return {
-        id: `TXN-${1000 + i}`,
-        reference: `REF-${2000 + i}`,
-        qrphReference: `QR-${3000 + i}`,
-        amount: Math.floor(Math.random() * 5000) + 100,
-        type: Math.random() > 0.5 ? "Cash In" : "Cash Out",
-        status: ["Success", "Pending", "Failed", "Closed"][Math.floor(Math.random() * 4)] as Transaction["status"],
-        description: "Sample transaction",
-        transactionDate: transactionDate.toISOString(),
-        processedDate: processedDate.toISOString(),
-    };
-});
+//     return {
+//         id: `TXN-${1000 + i}`,
+//         reference: `REF-${2000 + i}`,
+//         qrphReference: `QR-${3000 + i}`,
+//         amount: Math.floor(Math.random() * 5000) + 100,
+//         type: Math.random() > 0.5 ? "Cash In" : "Cash Out",
+//         status: ["Success", "Pending", "Failed", "Closed"][Math.floor(Math.random() * 4)] as Transaction["status"],
+//         description: "Sample transaction",
+//         transactionDate: transactionDate.toISOString(),
+//         processedDate: processedDate.toISOString(),
+//     };
+// });
 
 const Transactions: React.FC = () => {
     
@@ -136,11 +138,12 @@ const Transactions: React.FC = () => {
     // NOTE:
     // Replace dummyTransactions with _transactions if using api response
     const filteredTransactions = _transactions.filter((tx) => {
+        const allowedType = tx.type === "PAYMENT" || tx.type === "FUND_TRANSFER";
         const statusUpper = tx.status.toUpperCase(); 
         const matchesStatus = appliedStatus ? statusUpper === appliedStatus : true;
         const matchesType = appliedType ? tx.type === appliedType : true;
-        const matchesDate = appliedDate ? tx.transactionDate.includes(appliedDate) : true;
-        return matchesStatus && matchesType && matchesDate;
+        const matchesDate = appliedDate ? tx.created_at.includes(appliedDate) : true;
+        return allowedType && matchesStatus && matchesType && matchesDate;
     });
 
     const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / rowsPerPage));
@@ -156,13 +159,13 @@ const Transactions: React.FC = () => {
 
     const getStatusClass = (status: string) => {
         switch (status) {
-        case "Success":
+        case "SUCCESS":
             return "bg-green-100 text-green-700 border-green-400";
-        case "Pending":
+        case "PENDING":
             return "bg-blue-100 text-blue-700 border-blue-400";
-        case "Failed":
+        case "FAILED":
             return "bg-red-100 text-red-700 border-red-400";
-        case "Closed":
+        case "CLOSED":
             return "bg-gray-100 text-gray-700 border-gray-400";
         default:
             return "";
@@ -347,7 +350,7 @@ const Transactions: React.FC = () => {
                         </span>
                     </div>
 
-                    {/* Type Select - Compact on Mobile */}
+                    {/* Type Select */}
                     <div className="relative min-w-32.5 md:flex-1">
                         <select
                             value={typeInput}
@@ -355,9 +358,8 @@ const Transactions: React.FC = () => {
                             className="w-full appearance-none border border-black/20 rounded-md px-3 py-2 pr-8 text-sm focus:ring-2 focus:ring-cyan-500/20 outline-none bg-white"
                         >
                             <option value="">All Types</option>
-                            <option value="Cash In">Cash In</option>
-                            <option value="Cash Out">Cash Out</option>
-                            <option value="Withdrawal">Withdrawal</option>
+                            <option value="PAYMENT">Cash in</option>
+                            <option value="FUND_TRANSFER">Cash out</option>
                         </select>
                         <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-400">
                             <HiChevronDown size={14} />
@@ -423,8 +425,8 @@ const Transactions: React.FC = () => {
             <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
                 <tr>
-                {["Transaction ID", "Reference", "QRPH Ref", "Amount", "Type", "Status", "Description", "Date", "Processed"].map((header) => (
-                    <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{header}</th>
+                {["Transaction ID", "Reference", "Instapay Ref", "Amount", "Type", "Status", "Created", "Paid"].map((header) => (
+                    <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">{header}</th>
                 ))}
                 </tr>
             </thead>
@@ -437,24 +439,30 @@ const Transactions: React.FC = () => {
                 </td>
                 </tr>
             )
-            : currentTransactions.length > 0 ? (
-                currentTransactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-gray-400">{tx.id.slice(0, 8)}...</td>
-                    <td className="px-6 py-4 font-medium">{tx.reference}</td>
-                    <td className="px-6 py-4">{tx.qrphReference}</td>
-                    <td className={`px-6 py-4 font-semibold ${tx.type === "Cash In" ? "text-green-600" : "text-red-600"}`}>
-                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
+            : _error ? (
+                <tr>
+                    <td colSpan={9} className="px-6 py-8 text-center text-red-500 font-semibold">
+                        Invalid Token, Please Log in Again
                     </td>
-                    <td className="px-6 py-4">{tx.type}</td>
+                </tr>
+            ) :
+            currentTransactions.length > 0 ? (
+                currentTransactions.map((tx) => (
+                <tr key={tx.transaction_id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-gray-400 whitespace-nowrap">{tx.transaction_id ?? "N/A"}</td>
+                    <td className="px-6 py-4 font-medium">{tx.reference_id}</td>
+                    <td className="px-6 py-4">{tx.instapay_reference}</td>
+                    <td className={`px-6 py-4 font-semibold ${tx.type === "PAYMENT" ? "text-green-600" : "text-red-600"}`}>
+                    {tx.type === "PAYMENT" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
+                    </td>
+                    <td className="px-6 py-4">{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</td>
                     <td className="px-6 py-4">
                     <span className={`px-3 py-1 text-[10px] leading-5 font-bold rounded-full border ${getStatusClass(tx.status)}`}>
-                        {tx.status}
+                        {tx.status.charAt(0) + tx.status.slice(1).toLowerCase()}
                     </span>
                     </td>
-                    <td className="px-6 py-4">{tx.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateTime(tx.transactionDate)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateTime(tx.processedDate)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateTime(tx.created_at)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-400">{formatDateTime(tx.paid_at)}</td>
                 </tr>
                 ))
             ) : (
@@ -471,12 +479,20 @@ const Transactions: React.FC = () => {
 
         {/* Mobile Card View */}
         <div className="md:hidden flex-1 overflow-y-auto space-y-4">
-        {currentTransactions.map((tx) => (
-            <div key={tx.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        {loading ? (
+            <div className="flex justify-center py-8">
+                <Spinner />
+            </div>
+        ) : _error ? (
+            <div className="text-center py-8 text-red-500 font-semibold">
+                Invalid Token, Please Log in Again
+            </div>
+        ) : currentTransactions.map((tx) => (
+            <div key={tx.transaction_id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                    <p className="text-[10px] text-gray-400 font-mono uppercase tracking-tighter">{tx.id}</p>
-                    <p className="font-bold text-slate-800">{tx.reference}</p>
+                    <p className="text-[10px] text-gray-400 font-mono uppercase tracking-tighter">{tx.transaction_id}</p>
+                    <p className="font-bold text-slate-800">{tx.instapay_reference}</p>
                     </div>
 
                     {/* Right side: status badge + triple-dot */}
@@ -497,11 +513,11 @@ const Transactions: React.FC = () => {
 
                 <div className="flex justify-between items-end">
                     <div className="text-xs text-gray-500">
-                    <p>{tx.type}</p>
-                    <p className="text-[10px]">{new Date(tx.transactionDate).toLocaleString()}</p>
+                    <p>{tx.type === "PAYMENT" ? "Cash in" : "Cash out"}</p>
+                    <p className="text-[10px]">{new Date(tx.created_at).toLocaleString()}</p>
                     </div>
-                    <p className={`text-lg font-bold ${tx.type === "Cash In" ? "text-green-600" : "text-red-600"}`}>
-                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
+                    <p className={`text-lg font-bold ${tx.type === "PAYMENT" ? "text-green-600" : "text-red-600"}`}>
+                    {tx.type === "PAYMENT" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
                     </p>
                 </div>
             </div>
@@ -531,8 +547,8 @@ const Transactions: React.FC = () => {
                     {/* Primary Info: Amount & Status */}
                     <div className="text-center mb-8">
                         <p className="text-xs font-medium text-slate-400 uppercase mb-1">Total Amount</p>
-                        <div className={`text-3xl font-bold ${selectedTransaction.type === "Cash In" ? "text-emerald-600" : "text-slate-900"}`}>
-                            {selectedTransaction.type === "Cash In" ? "+" : "-"}₱{selectedTransaction.amount.toLocaleString()}
+                        <div className={`text-3xl font-bold ${selectedTransaction.type === "PAYMENT" ? "text-emerald-600" : "text-slate-900"}`}>
+                            {selectedTransaction.type === "PAYMENT" ? "+" : "-"}₱{selectedTransaction.amount.toLocaleString()}
                         </div>
                         <div className="mt-3 flex justify-center">
                             <span className={`px-4 py-1 rounded-full text-[11px] font-bold border ${getStatusClass(selectedTransaction.status)}`}>
@@ -544,16 +560,15 @@ const Transactions: React.FC = () => {
                     {/* Details Grid */}
                     <div className="grid grid-cols-1 gap-y-4">
                         {[
-                            { label: "Reference Number", value: selectedTransaction.reference },
-                            { label: "QRPH Reference", value: selectedTransaction.qrphReference || "N/A" },
-                            { label: "Transaction Type", value: selectedTransaction.type },
-                            { label: "Description", value: selectedTransaction.description },
-                            { label: "Transaction Date", value: formatDateTime(selectedTransaction.transactionDate) },
-                            { label: "Processed Date", value: formatDateTime(selectedTransaction.processedDate) },
+                            { label: "Reference ID", value: selectedTransaction.reference_id },
+                            { label: "Instapay Reference", value: selectedTransaction.instapay_reference || "N/A" },
+                            { label: "Transaction Type", value: selectedTransaction.type === "PAYMENT" ? "Cash in": "Cash out"},
+                            { label: "Created At", value: formatDateTime(selectedTransaction.created_at) },
+                            { label: "Paid At", value: formatDateTime(selectedTransaction.paid_at) },
                         ].map((item, idx) => (
                             <div key={idx} className="flex justify-between items-start border-b border-slate-50 pb-2 last:border-0">
                                 <span className="text-xs font-medium text-slate-400">{item.label}</span>
-                                <span className="text-xs font-semibold text-slate-700 text-right max-w-[200px] break-all">
+                                <span className="text-xs font-semibold text-slate-700 text-right max-w-50 break-all">
                                     {item.value}
                                 </span>
                             </div>
@@ -565,7 +580,7 @@ const Transactions: React.FC = () => {
                         <div className="flex flex-col items-center gap-1">
                             <span className="text-[10px] font-medium text-slate-300 uppercase tracking-widest">Transaction ID</span>
                             <span className="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded select-all">
-                                {selectedTransaction.id}
+                                {selectedTransaction.transaction_id}
                             </span>
                         </div>
                     </div>
