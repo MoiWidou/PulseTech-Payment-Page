@@ -133,7 +133,7 @@ const Transactions: React.FC = () => {
         setCurrentPage(1);
     };
 
-    const filteredTransactions = dummyTransactions.filter((tx) => {
+    const filteredTransactions = _transactions.filter((tx) => {
         const statusUpper = tx.status.toUpperCase(); 
         const matchesStatus = appliedStatus ? statusUpper === appliedStatus : true;
         const matchesType = appliedType ? tx.type === appliedType : true;
