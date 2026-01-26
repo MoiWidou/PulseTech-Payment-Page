@@ -133,6 +133,8 @@ const Transactions: React.FC = () => {
         setCurrentPage(1);
     };
 
+    // NOTE:
+    // Replace dummyTransactions with _transactions if using api response
     const filteredTransactions = _transactions.filter((tx) => {
         const statusUpper = tx.status.toUpperCase(); 
         const matchesStatus = appliedStatus ? statusUpper === appliedStatus : true;
@@ -180,7 +182,7 @@ const Transactions: React.FC = () => {
                 limit: rowsPerPage.toString(),
             });
 
-            const token = localStorage.getItem("access_token"); // or from cookie
+            const token = localStorage.getItem("accessToken"); // or from cookie
             const res = await fetch(`${API_URL}/dashboard/transactions?${params.toString()}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -442,7 +444,7 @@ const Transactions: React.FC = () => {
                     <td className="px-6 py-4 font-medium">{tx.reference}</td>
                     <td className="px-6 py-4">{tx.qrphReference}</td>
                     <td className={`px-6 py-4 font-semibold ${tx.type === "Cash In" ? "text-green-600" : "text-red-600"}`}>
-                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString()}
+                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
                     </td>
                     <td className="px-6 py-4">{tx.type}</td>
                     <td className="px-6 py-4">
@@ -499,7 +501,7 @@ const Transactions: React.FC = () => {
                     <p className="text-[10px]">{new Date(tx.transactionDate).toLocaleString()}</p>
                     </div>
                     <p className={`text-lg font-bold ${tx.type === "Cash In" ? "text-green-600" : "text-red-600"}`}>
-                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString()}
+                    {tx.type === "Cash In" ? "+" : "-"}₱{tx.amount.toLocaleString("en-PH")}
                     </p>
                 </div>
             </div>

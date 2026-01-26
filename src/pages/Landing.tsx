@@ -45,10 +45,10 @@ const Landing: React.FC = () => {
     
     const formattedBalance =
     fundTransferData
-        ? `₱${fundTransferData.BALANCE.toFixed(2).toLocaleString()}`
+        ? `₱${fundTransferData.BALANCE.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         : "₱0.00";
 
-    const hiddenBalance = formattedBalance.replace(/[^$]/g, "*");
+    const hiddenBalance = formattedBalance.replace(/[^₱]/g, "*");
     const totalTransactions = (paymentData?.COUNT ?? 0) + (fundTransferData?.COUNT ?? 0);
     const totalTPM = (paymentData?.TRX_PER_MIN ?? 0)
     
@@ -207,8 +207,7 @@ const Landing: React.FC = () => {
                         <p className="text-2xl font-bold mt-1 text-slate-800">
                             {loading ? (
                                 <Spinner />
-                            ) : ((totalTPM
-                            ?? 0.00)).toFixed(2)
+                            ) : (totalTPM ?? 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                             }
                         </p>
                     </div>
@@ -224,7 +223,7 @@ const Landing: React.FC = () => {
                                 ? (
                                     <Spinner/>
                                 ) 
-                                : ((totalTransactions ?? 0.00).toFixed(2))
+                                : (totalTransactions ?? 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                             }
                         </p>
                     </div>
@@ -251,8 +250,7 @@ const Landing: React.FC = () => {
                             <p className="text-2xl font-bold mt-1 text-slate-800">₱
                                 {loading ? (
                                     <Spinner />
-                                ) : ((paymentData?.TOTAL
-                                ?? 0.00).toFixed(2))
+                                ) : (paymentData?.TOTAL ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2, maximumFractionDigits: 2 })
                                 }
                             </p>
                         </div>
@@ -270,8 +268,7 @@ const Landing: React.FC = () => {
                             <p className="text-2xl font-bold mt-1 text-slate-800">₱
                                 {loading ? (
                                     <Spinner />
-                                ) : ((fundTransferData?.TOTAL
-                                ?? 0.00).toFixed(2))
+                                ) : (fundTransferData?.TOTAL ?? 0).toLocaleString("en-PH" , {minimumFractionDigits:2 , maximumFractionDigits: 2})
                                 }
                             </p>
                         </div>
@@ -288,8 +285,7 @@ const Landing: React.FC = () => {
                             <p className="text-2xl font-bold mt-1 text-slate-800">
                                 {loading ? (
                                     <Spinner />
-                                ) : ((paymentData?.COUNT
-                                ?? 0).toFixed(2))
+                                ) : (paymentData?.COUNT ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2 , maximumFractionDigits: 2 })
                                 }
                             </p>
                         </div>
@@ -300,8 +296,7 @@ const Landing: React.FC = () => {
                             <p className="text-2xl font-bold mt-1 text-slate-800">
                                 {loading ? (
                                     <Spinner />
-                                ) : ((fundTransferData?.COUNT
-                                ?? 0).toFixed(2))
+                                ) : (fundTransferData?.COUNT ?? 0).toLocaleString("en-PH", {minimumFractionDigits: 2 , maximumFractionDigits: 2 })
                                 }
                             </p>
                         </div>
