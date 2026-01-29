@@ -290,7 +290,7 @@ const Withdrawal: React.FC = () => {
 
             // Build request payload to match WithdrawalRequest
             const payload = {
-                account_id: "", 
+                account_id: selectedAccountId, 
                 amount: amountNumber,
                 service_type: formData.method, // 'instapay' or 'pesonet'
             };
@@ -299,7 +299,7 @@ const Withdrawal: React.FC = () => {
 
             const token = localStorage.getItem("accessToken") || "";
 
-            const res = await fetch(`${API_URL2}/dashboard/withdrawal`, {
+            const res = await fetch(`${API_URL2}/dashboard/account/wallet/withdrawal`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
