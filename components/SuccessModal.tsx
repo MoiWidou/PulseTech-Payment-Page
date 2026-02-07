@@ -68,7 +68,7 @@ const SuccessModal: React.FC = () => {
             <div className="w-full bg-[#F4F6F8] rounded-tr-2xl rounded-tl-2xl border border-gray-100 p-4 shadow-lg">
                     <div className="flex justify-between items-center mb-3">
                         <span className="text-[#312B5B] text-lg font-bold">You are sending</span>
-                        <span className="text-[#312B5B] font-bold text-base">{paymentDetails.amount}</span>
+                        <span className="text-[#312B5B] font-bold text-base">₱ {Number(paymentDetails.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 
                     <div className="border-t border-dashed border-[#6F7282] pt-2 mb-3"/>
