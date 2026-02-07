@@ -18,7 +18,8 @@ const SuccessModal: React.FC = () => {
 
     if (!paymentSummary) return <p>No payment details available.</p>;
 
-    const { totalAmount, method, _subTotal, _processingFee, _systemFee } = paymentSummary;
+    // const { totalAmount, method, _subTotal, _processingFee, _systemFee } = paymentSummary;
+    const { totalAmount, method} = paymentSummary;
 
     const paymentDetails = {
         amount: totalAmount,
@@ -59,7 +60,7 @@ const SuccessModal: React.FC = () => {
             </div>
 
             <h1 className="text-[#312B5B] text-xl md:text-lg font-bold mb-1">Payment Successful</h1>
-            <p className="text-[#6F7282] text-xs leading-snug mb-4 max-w-[240px]">
+            <p className="text-[#6F7282] text-xs leading-snug mb-4 max-w-60">
                 Thank you for your payment. Your payment has been processed successfully.
             </p>
 
