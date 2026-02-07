@@ -1,9 +1,9 @@
 import './App.css';
 import Landing from '../pages/Landing';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PaymentSuccess from "../components/SuccessModal";
-// import PaymentFailed from "../components/FailedModal";
-// import PaymentPending from "../components/PendingModal";
+import SuccessModal from "../components/SuccessModal";
+import FailedModal from "../components/FailedModal";
+import PendingModal from "../components/PendingModal";
 
 function App() {
 
@@ -12,7 +12,9 @@ function App() {
       <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/success" element={<PaymentSuccess />} />
+        <Route path="/status/success" element={<SuccessModal />} />
+        <Route path="/status/failed" element={<FailedModal />} />
+        <Route path="/status/pending" element={<PendingModal />} />
       </Routes>
     </Router>
     </>
