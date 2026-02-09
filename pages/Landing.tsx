@@ -189,8 +189,8 @@ const DIGITAL: DigitalOption[] = [
 
 const PaymentPage: React.FC = () => {
     const navigate = useNavigate();
-    const [ amount, setAmount] = useState<number>(100);
-    const [ method, setMethod] = useState<string>('');
+    const [ amount, setAmount] = useState<number>(0);
+    const [ method, setMethod] = useState<string>('bank');
     const [ selectedBank, setSelectedBank] = useState<string>('bpi');
     const [ selectedCard, setSelectedCard] = useState<string>('credit-card');
     const [ selectedOnlineBank, setSelectedOnlineBank] = useState<string>('bdo');
@@ -202,7 +202,7 @@ const PaymentPage: React.FC = () => {
     // const [ creditCardExpire, setCreditCardExpire] = useState("");
     // const [ creditCardCVV, setCreditCardCVV] = useState("");
 
-    const [ onlineSelectedDevice, setOnlineSelectedDevice] = useState("");
+    const [ onlineSelectedDevice, setOnlineSelectedDevice] = useState("desktop");
 
     // const [debitCardName, setDebitCardName] = useState("");
     // const [debitCardNumber, setDebitCardNumber] = useState("");
@@ -315,446 +315,494 @@ const PaymentPage: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen bg-purple-50 flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
+        <div className="min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
         
         {/* Condensed Header */}
         <header className="flex flex-col items-center mb-4">
-            <div className="w-12 h-12 bg-[#D9D9D9] rounded-full mb-2" />
+            <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2 mt-10 lg:mt-0" />
             <h1 className="text-xl font-bold text-[#312B5B]">Business Name</h1>
             <div className="flex gap-4 mt-1 text-[#312B5B]">
-            <Facebook size={16} className="cursor-pointer hover:text-blue-600 transition-colors" />
-            <Instagram size={16} className="cursor-pointer hover:text-pink-600 transition-colors" />
-            <Link2 size={16} className="cursor-pointer hover:text-gray-600 transition-colors" />
+            <Facebook size={18} strokeWidth={3} className="cursor-pointer hover:text-blue-600 transition-colors" />
+            <Instagram size={18} strokeWidth={3} className="cursor-pointer hover:text-pink-600 transition-colors" />
+            <Link2 size={18} strokeWidth={3} className="cursor-pointer hover:text-gray-600 transition-colors" />
             </div>
         </header>
 
         {/* Main Container */}
         <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden p-6 md:p-8">
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-6">
             
-            {/* Form Controls */}
-            <div className="lg:col-span-2 space-y-5 space-x-8">
-                <div ref={formRef}>
-                <section className='mb-5'>
-                <h2 className="text-md font-bold text-[#312B5B]">Enter Amount</h2>
-                <p className="text-[11px] text-[#37416C] mb-2">How much would you like to pay?</p>
-                
-                <div className="relative mb-2">
-                    <span className="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-[#312B5B]">₱</span>
-                    <input 
-                    type="text"
-                    value={amount.toLocaleString()}
-                    onChange={(e) => handleAmountChange(e.target.value)}
-                    className="w-[40%] py-1.5 border border-slate-200 rounded-lg text-center font-bold focus:border-indigo-500 outline-none transition-all"
-                    />
-                </div>
+                {/* Form Controls */}
+                <div className="lg:col-span-2 space-y-5 md:space-x-8">
+                    <div ref={formRef}>
+                        <section className='mb-5'>
+                            <h2 className="text-base font-bold text-[#312B5B]">Enter Amount</h2>
+                            <p className="text-xs text-[#37416C] mb-2">How much would you like to pay?</p>
+                            
+                            <div className="mb-2 flex justify-center md:justify-start">
+                                <div className="flex items-center w-[70%] md:w-1/2 border border-slate-200 rounded-lg px-2 py-1.5">
+                                    <span className="font-bold text-[#312B5B] mr-1">₱</span>
+                                    <input
+                                    type="text"
+                                    value={amount.toLocaleString()}
+                                    onChange={(e) => handleAmountChange(e.target.value)}
+                                    className="w-full text-center py-1 md:text-center font-bold outline-none"
+                                    placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
 
-                <div className="grid grid-cols-3 gap-2">
-                    {PRESET_AMOUNTS.map((val) => (
-                    <button
-                        key={val}
-                        onClick={() => setAmount(val)}
-                        className={`py-2 border rounded-lg text-xs font-semibold transition-all ${
-                        amount === val 
-                            ? 'bg-[#312B5B] border-[#312B5B] text-white' 
-                            : 'border-slate-100 text-slate-500 hover:border-slate-300'
-                        }`}
-                    >
-                        ₱{val.toLocaleString()}
-                    </button>
-                    ))}
-                </div>
-                </section>
+                            <div className="grid grid-cols-3 gap-2">
+                                {PRESET_AMOUNTS.map((val) => (
+                                <button
+                                    key={val}
+                                    onClick={() => setAmount(val)}
+                                    className={`w-full py-2 border rounded-lg text-xs font-semibold transition-all ${
+                                    amount === val 
+                                        ? 'bg-[#312B5B] border-[#312B5B] text-white' 
+                                        : 'border-slate-100 text-slate-500 hover:border-slate-300'
+                                    }`}
+                                >
+                                    ₱{val.toLocaleString()}
+                                </button>
+                                ))}
+                            </div>
+                        </section>
 
-                <section >
-                <h2 className="text-md font-bold text-[#312B5B]">Payment Method</h2>
-                <p className="text-[11px] text-[#37416C] mb-2">Select how you want to pay</p>
-                
-                <div className="grid grid-cols-3 gap-2 mb-3">
-                    {PAYMENT_METHODS.map((item) => (
-                    <button
-                        key={item.id}
-                        onClick={() => {
-                            if (!item.disabled) handleMethodSelect(item.id);
-                        }}
-                        className={`flex flex-col items-center justify-center gap-1 py-2 px-1 border font-semibold rounded-lg transition-all ${
+                        <section >
+                        <h2 className="text-base font-bold text-[#312B5B]">Payment Method</h2>
+                        <p className="text-xs text-[#37416C] mb-2">Select how you want to pay</p>
                         
-                            item.disabled
-                                ? 'opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-200'
-                                :
-                            method === item.id 
-                            ? 'bg-[#312B5B] border-[#312B5B] text-white' 
-                            : 'border-slate-100 text-slate-500 hover:border-slate-300' 
-                        }`}
-                    >
-                        
-                        <span className="flex text-[10px] text-center justify-center whitespace-nowrap leading-tight">
-                            <span className='mr-1'>
-                                {item.icon}
-                            </span>
-                                {item.label}
-                        </span>
-                    </button>
-                    ))}
-                </div>
-                </section>
-                </div>
-                
-                {/* Extra Selections */}
-                {method === 'bank' && (
-                    <div className="p-2 rounded space-y-2">
-                        <p className="text-[11px] font-bold text-[#312B5B]">
-                        What bank will you use?
-                        </p>
-
-                        {BANKS.map((bank) => (
-                        <label
-                            key={bank.id}
-                            className="flex text-[#312B5B] items-center gap-3 p-1.5 cursor-pointer rounded hover:bg-white group transition-colors"
-                        >
-                            <input
-                            type="radio"
-                            checked={selectedBank === bank.id}
-                            onChange={() => setSelectedBank(bank.id)}
-                            className="accent-[#312B5B] scale-75"
-                            />
-
-                            <img src={bank.logo} alt="" className="w-10 h-10 rounded" />
-
-                            <div>
-                            <p className="text-[12px] font-bold leading-none text-[#312B5B]">
-                                {bank.name}
-                            </p>
-                            <p className="text-[10px] leading-tight text-[#312B5B]">
-                                {bank.description}
-                            </p>
-                            </div>
-                        </label>
-                        ))}
-                    </div>
-                )}
-
-                {method === 'card' && (
-                <div className="rounded space-y-2">
-                    <p className="text-[11px] font-bold text-[#312B5B]">
-                    How would you like to send money?
-                    </p>
-
-                    {CARDS.map((card) => {
-                    const isSelected = selectedCard === card.id;
-                    const Icon = card.logo;
-
-                    return (
-                        <div
-                        key={card.id}
-                        className={`text-[11px] rounded-md transition-all border border-[#312B5B] w-[95%] mx-auto ${
-                            isSelected
-                            ? "border-[#312B5B] bg-[#F7F8FA]"
-                            : "border-transparent"
-                        }`}
-                        >
-                        <label className="flex items-center gap-4 p-2 cursor-pointer">
-                            <input
-                            type="radio"
-                            name="paymentMethod"
-                            checked={isSelected}
-                            onChange={() => setSelectedCard(card.id)}
-                            className="mt-1.5 w-4 h-4 accent-[#312B5B]"
-                            />
-
-                            <Icon
-                            className="w-5 h-5 text-[#312B5B] shrink-0"
-                            strokeWidth={1.5}
-                            />
-
-                            <div className="flex flex-col">
-                            <span className="text-[12px] font-bold text-[#312B5B]">
-                                {card.name}
-                            </span>
-                            <span className="text-[10px] text-[#312B5B]">
-                                {card.description}
-                            </span>
-                            </div>
-                        </label>
-                        </div>
-                    );
-                    })}
-                </div>
-                )}
-
-                {method === 'online' && (
-                <div>
-                    <div className="flex gap-2 mb-3 w-[70%] mx-auto">
-                    <label className="relative flex-1 cursor-pointer">
-                        <input
-                        type="radio"
-                        name="device-type"
-                        value="desktop"
-                        className="sr-only"
-                        checked={onlineSelectedDevice === "desktop"}
-                        onChange={(e) => setOnlineSelectedDevice(e.target.value)}
-                        />
-
-                        <div
-                        className={`flex items-center justify-center gap-3 py-3 px-4 rounded-md transition-all duration-200 ${
-                            onlineSelectedDevice === "desktop"
-                            ? "bg-[#312B5B] text-white shadow-md"
-                            : "text-[#312B5B] hover:bg-gray-200"
-                        }`}
-                        >
-                        <Monitor
-                            size={20}
-                            strokeWidth={onlineSelectedDevice === "desktop" ? 2.5 : 1.5}
-                        />
-
-                        <div className="flex flex-col items-start">
-                            <span className="text-[12px] font-bold leading-none">
-                            Desktop
-                            </span>
-                            <span className="text-[10px]">
-                            Bank's web portal
-                            </span>
-                        </div>
-                        </div>
-                    </label>
-
-                    <label className="relative flex-1 cursor-pointer">
-                        <input
-                        type="radio"
-                        name="device-type"
-                        value="mobile"
-                        className="sr-only"
-                        checked={onlineSelectedDevice === "mobile"}
-                        onChange={(e) => setOnlineSelectedDevice(e.target.value)}
-                        />
-
-                        <div
-                        className={`flex items-center justify-center gap-3 py-3 px-4 rounded-md transition-all duration-200 ${
-                            onlineSelectedDevice === "mobile"
-                            ? "bg-[#312B5B] text-white shadow-md"
-                            : "text-[#312B5B] hover:bg-gray-200"
-                        }`}
-                        >
-                        <Smartphone
-                            size={20}
-                            strokeWidth={onlineSelectedDevice === "mobile" ? 2.5 : 1.5}
-                        />
-
-                        <div className="flex flex-col items-start">
-                            <span className="text-[12px] font-bold leading-none">
-                            Mobile
-                            </span>
-                            <span className="text-[10px]">
-                            Bank's mobile app
-                            </span>
-                        </div>
-                        </div>
-                    </label>
-                    </div>
-
-                    {ONLINE_METHODS.map((bank) => {
-                    const isSelected = selectedOnlineBank === bank.id;
-
-                    return (
-                        <div
-                        key={bank.id}
-                        className={`rounded-md text-[11px] transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
-                            isSelected
-                            ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
-                            : "border-transparent hover:bg-gray-50"
-                        }`}
-                        >
-                        <label className="flex items-center gap-4 p-3 cursor-pointer">
-                            <input
-                            type="radio"
-                            name="onlineMethod"
-                            checked={isSelected}
-                            onChange={() => setSelectedOnlineBank(bank.id)}
-                            className="w-4 h-4 accent-[#312B5B] cursor-pointer"
-                            />
-
-                            <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
-                            <img
-                                src={bank.logo}
-                                alt={bank.name}
-                                className="w-full h-full object-contain"
-                            />
-                            </div>
-
-                            <div className="flex flex-col leading-tight">
-                            <span className="text-[12px] font-bold text-[#312B5B]">
-                                {bank.name}
-                            </span>
-
-                            <span className="text-[10px] text-[#312B5B] mt-0.5">
-                                {bank.description}
-                            </span>
-
-                            {bank.fee && (
-                                <span className="text-[10px] text-[#312B5B]">
-                                {bank.fee}
+                        <div className="md:grid md:grid-cols-3 grid grid-cols-2 gap-2 mb-3">
+                            {PAYMENT_METHODS.map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => {
+                                    if (!item.disabled) handleMethodSelect(item.id);
+                                }}
+                                className={`w-full flex flex-col items-center justify-center gap-1 py-2 px-1 border font-semibold rounded-lg transition-all ${
+                                
+                                    item.disabled
+                                        ? 'opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-200'
+                                        :
+                                    method === item.id 
+                                    ? 'bg-[#312B5B] border-[#312B5B] text-white' 
+                                    : 'border-slate-100 text-slate-500 hover:border-slate-300' 
+                                }`}
+                            >
+                                
+                                <span className="flex text-xs text-center justify-center whitespace-nowrap leading-tight">
+                                    <span className='mr-1'>
+                                        {item.icon}
+                                    </span>
+                                        {item.label}
                                 </span>
-                            )}
-                            </div>
-                        </label>
+                            </button>
+                            ))}
                         </div>
-                    );
-                    })}
-                </div>
-                )}
-
-                {method === 'otc' && (
-                    <div>
-
-                    {OTC_METHODS.map((otc) => {
-                    const isSelected = selectedOnlineOTC === otc.id;
-                    const Icon = otc.logo;
-                    return (
-                        <div
-                        key={otc.id}
-                        className={`rounded-md text-[11px] transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
-                            isSelected
-                            ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
-                            : "border-transparent hover:bg-gray-50"
-                        }`}
-                        >
-                        <label className="flex items-center gap-4 p-3 cursor-pointer">
-                            <input
-                            type="radio"
-                            name="onlineMethod"
-                            checked={isSelected}
-                            onChange={() => setSelectedOnlineOTC(otc.id)}
-                            className="w-4 h-4 accent-[#312B5B] cursor-pointer"
-                            />
-
-                            <div className="w-5 h-5 rounded flex items-center justify-center shrink-0 overflow-hidden">
-                                <Icon/>
-                            </div>
-
-                            <div className="flex flex-col leading-tight">
-                            <span className="text-[12px] font-bold text-[#312B5B]">
-                                {otc.name}
-                            </span>
-
-                            <span className="text-[10px] text-[#312B5B] mt-0.5">
-                                {otc.description}
-                            </span>
-
-                            </div>
-                        </label>
-                        </div>
-                    );
-                    })}
-                </div>
-                )}
-
-                {method === 'wallet' && (
-                    <div>
-
-                    {DIGITAL.map((wallet) => {
-                    const isSelected = selectedOnlineWallet === wallet.id;
-
-                    return (
-                        <div
-                        key={wallet.id}
-                        className={`rounded-md text-[11px] transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
-                            isSelected
-                            ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
-                            : "border-transparent hover:bg-gray-50"
-                        }`}
-                        >
-                        <label className="flex items-center gap-4 p-3 cursor-pointer">
-                            <input
-                            type="radio"
-                            name="onlineMethod"
-                            checked={isSelected}
-                            onChange={() => setSelectedOnlineWallet(wallet.id)}
-                            className="w-4 h-4 accent-[#312B5B] cursor-pointer"
-                            />
-
-                            <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
-                                <img
-                                    src={wallet.logo}
-                                    alt={wallet.name}
-                                    className="w-full h-full object-contain"
+                        </section>
+                    </div>
+                    
+                    {/* Extra Selections */}
+                    {method === 'bank' && (
+                        <div className="p-2 rounded space-y-2">
+                            <p className="text-xs font-bold text-[#312B5B]">
+                            What bank will you use?
+                            </p>
+                            <div
+                            className="space-y-2 overflow-y-auto"
+                            style={{
+                                minHeight: `${3 * 56}px`, // assuming each bank row is ~56px tall
+                                maxHeight: '16rem' // optional: limit overall height
+                            }}
+                            >
+                            {BANKS.map((bank) => (
+                            <label
+                                key={bank.id}
+                                className="flex text-[#312B5B] items-center gap-3 p-1.5 cursor-pointer rounded hover:bg-white group transition-colors"
+                            >
+                                <input
+                                type="radio"
+                                checked={selectedBank === bank.id}
+                                onChange={() => setSelectedBank(bank.id)}
+                                className="accent-[#312B5B] scale-75"
                                 />
+
+                                <img src={bank.logo} alt="" className="w-10 h-10 object-contain p-1 rounded" />
+
+                                <div>
+                                <p className="text-sm font-bold leading-none text-[#312B5B]">
+                                    {bank.name}
+                                </p>
+                                <p className="text-xs leading-tight text-[#312B5B]">
+                                    {bank.description}
+                                </p>
+                                </div>
+                            </label>
+                            ))}
                             </div>
+                        </div>
+                    )}
 
-                            <div className="flex flex-col leading-tight">
-                            <span className="text-[12px] font-bold text-[#312B5B]">
-                                {wallet.name}
-                            </span>
+                    {method === 'card' && (
+                    <div className="rounded space-y-2">
+                        <p className="text-xs font-bold text-[#312B5B]">
+                        How would you like to send money?
+                        </p>
+                        
+                        <div
+                        className="space-y-2 overflow-y-auto"
+                        style={{
+                            minHeight: `${3 * 56}px`, // assuming each bank row is ~56px tall
+                            maxHeight: '16rem' // optional: limit overall height
+                        }}
+                        >
 
-                            <span className="text-[10px] text-[#312B5B] mt-0.5">
-                                {wallet.description}
-                            </span>
+                        {CARDS.map((card) => {
+                        const isSelected = selectedCard === card.id;
+                        const Icon = card.logo;
 
+                        return (
+                            <div
+                            key={card.id}
+                            className={`text-xs rounded-md transition-all border border-[#312B5B] w-[95%] mx-auto ${
+                                isSelected
+                                ? "border-[#312B5B] bg-[#F7F8FA]"
+                                : "border-transparent"
+                            }`}
+                            >
+                            <label className="flex items-center gap-4 p-2 cursor-pointer">
+                                <input
+                                type="radio"
+                                name="paymentMethod"
+                                checked={isSelected}
+                                onChange={() => setSelectedCard(card.id)}
+                                className="mt-1.5 w-4 h-4 accent-[#312B5B]"
+                                />
+
+                                <Icon
+                                className="w-5 h-5 text-[#312B5B] shrink-0"
+                                strokeWidth={1.5}
+                                />
+
+                                <div className="flex flex-col">
+                                <span className="text-sm font-bold text-[#312B5B]">
+                                    {card.name}
+                                </span>
+                                <span className="text-xs text-[#312B5B]">
+                                    {card.description}
+                                </span>
+                                </div>
+                            </label>
+                            </div>
+                        );
+                        })}
+                        </div>
+                    </div>
+                    )}
+
+                    {method === 'online' && (
+                    <div>
+                        <div className="flex mb-3 w-[70%] mx-auto">
+                        <label className="relative flex-1 cursor-pointer">
+                            <input
+                            type="radio"
+                            name="device-type"
+                            value="desktop"
+                            className="sr-only"
+                            checked={onlineSelectedDevice === "desktop"}
+                            onChange={(e) => setOnlineSelectedDevice(e.target.value)}
+                            />
+
+                            <div
+                            className={`flex items-center justify-center gap-3 py-3 px-4 rounded-tl rounded-bl transition-all duration-200 ${
+                                onlineSelectedDevice === "desktop"
+                                ? "bg-[#312B5B] text-white shadow-md"
+                                : "text-[#312B5B] hover:bg-gray-200"
+                            }`}
+                            >
+                            <Monitor
+                                size={20}
+                                strokeWidth={onlineSelectedDevice === "desktop" ? 2.5 : 1.5}
+                            />
+
+                            <div className="flex flex-col items-start">
+                                <span className="text-sm font-bold leading-none">
+                                Desktop
+                                </span>
+                                <span className="text-xs">
+                                Bank's web portal
+                                </span>
+                            </div>
+                            </div>
+                        </label>
+
+                        <label className="relative flex-1 cursor-pointer">
+                            <input
+                            type="radio"
+                            name="device-type"
+                            value="mobile"
+                            className="sr-only"
+                            checked={onlineSelectedDevice === "mobile"}
+                            onChange={(e) => setOnlineSelectedDevice(e.target.value)}
+                            />
+
+                            <div
+                            className={`flex items-center justify-center gap-3 py-3 px-4 rounded-tr rounded-br transition-all duration-200 ${
+                                onlineSelectedDevice === "mobile"
+                                ? "bg-[#312B5B] text-white shadow-md"
+                                : "text-[#312B5B] hover:bg-gray-200"
+                            }`}
+                            >
+                            <Smartphone
+                                size={20}
+                                strokeWidth={onlineSelectedDevice === "mobile" ? 2.5 : 1.5}
+                            />
+
+                            <div className="flex flex-col items-start">
+                                <span className="text-sm font-bold leading-none">
+                                Mobile
+                                </span>
+                                <span className="text-xs">
+                                Bank's mobile app
+                                </span>
+                            </div>
                             </div>
                         </label>
                         </div>
-                    );
-                    })}
-                </div>
-                )}
-
-                <div className="flex justify-end">
-                    <button 
-                        className="w-1/2 bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:bg-[#0a4669] text-white py-2 rounded font-bold text-sm transition-all shadow-md active:scale-97"
-                        onClick={handlePaymentSuccess}
+                        
+                        <div
+                        className="space-y-2 overflow-y-auto"
+                        style={{
+                            minHeight: `${3 * 56}px`, // assuming each bank row is ~56px tall
+                            maxHeight: '16rem' // optional: limit overall height
+                        }}
                         >
-                            Pay Now
-                    </button>
-                </div>
-            </div>
 
-            {/* Summary Card */}
-            <div className="lg:col-span-1" style={{ height: summaryHeight }}>
-                <div className="bg-[#F4F6F8] rounded-tr-xl rounded-tl-xl p-4 border border-gray-100 flex flex-col shadow-md"
+                        {ONLINE_METHODS.map((bank) => {
+                        const isSelected = selectedOnlineBank === bank.id;
+
+                        return (
+                            <div
+                            key={bank.id}
+                            className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
+                                isSelected
+                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                : "border-transparent hover:bg-gray-50"
+                            }`}
+                            >
+                            <label className="flex items-center gap-4 p-3 cursor-pointer">
+                                <input
+                                type="radio"
+                                name="onlineMethod"
+                                checked={isSelected}
+                                onChange={() => setSelectedOnlineBank(bank.id)}
+                                className="w-4 h-4 accent-[#312B5B] cursor-pointer"
+                                />
+
+                                <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                                <img
+                                    src={bank.logo}
+                                    alt={bank.name}
+                                    className="w-full h-full object-contain p-1"
+                                />
+                                </div>
+
+                                <div className="flex flex-col leading-tight">
+                                <span className="text-sm font-bold text-[#312B5B]">
+                                    {bank.name}
+                                </span>
+
+                                <span className="text-xs text-[#312B5B] mt-0.5">
+                                    {bank.description}
+                                </span>
+
+                                {bank.fee && (
+                                    <span className="text-xs text-[#312B5B]">
+                                    {bank.fee}
+                                    </span>
+                                )}
+                                </div>
+                            </label>
+                            </div>
+                        );
+                        })}
+                        </div>
+                    </div>
+                    )}
+
+                    {method === 'otc' && (
+                        <div>
+                        
+                        <div
+                        className="space-y-2 overflow-y-auto"
+                        style={{
+                            minHeight: `${3 * 56}px`, // assuming each bank row is ~56px tall
+                            maxHeight: '16rem' // optional: limit overall height
+                        }}
+                        >
+
+                        {OTC_METHODS.map((otc) => {
+                        const isSelected = selectedOnlineOTC === otc.id;
+                        const Icon = otc.logo;
+                        return (
+                            <div
+                            key={otc.id}
+                            className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
+                                isSelected
+                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                : "border-transparent hover:bg-gray-50"
+                            }`}
+                            >
+                            <label className="flex items-center gap-4 p-3 cursor-pointer">
+                                <input
+                                type="radio"
+                                name="onlineMethod"
+                                checked={isSelected}
+                                onChange={() => setSelectedOnlineOTC(otc.id)}
+                                className="w-4 h-4 accent-[#312B5B] cursor-pointer"
+                                />
+
+                                <div className="w-5 h-5 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                                    <Icon/>
+                                </div>
+
+                                <div className="flex flex-col leading-tight">
+                                <span className="text-sm font-bold text-[#312B5B]">
+                                    {otc.name}
+                                </span>
+
+                                <span className="text-xs text-[#312B5B] mt-0.5">
+                                    {otc.description}
+                                </span>
+
+                                </div>
+                            </label>
+                            </div>
+                        );
+                        })}
+                        </div>
+                    </div>
+                    )}
+
+                    {method === 'wallet' && (
+                        <div>
+                        
+                        <div
+                        className="space-y-2 overflow-y-auto"
+                        style={{
+                            minHeight: `${3 * 56}px`, // assuming each bank row is ~56px tall
+                            maxHeight: '16rem' // optional: limit overall height
+                        }}
+                        >
+
+                        {DIGITAL.map((wallet) => {
+                        const isSelected = selectedOnlineWallet === wallet.id;
+
+                        return (
+                            <div
+                            key={wallet.id}
+                            className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
+                                isSelected
+                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                : "border-transparent hover:bg-gray-50"
+                            }`}
+                            >
+                            <label className="flex items-center gap-4 p-3 cursor-pointer">
+                                <input
+                                type="radio"
+                                name="onlineMethod"
+                                checked={isSelected}
+                                onChange={() => setSelectedOnlineWallet(wallet.id)}
+                                className="w-4 h-4 accent-[#312B5B] cursor-pointer"
+                                />
+
+                                <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                                    <img
+                                        src={wallet.logo}
+                                        alt={wallet.name}
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
+
+                                <div className="flex flex-col leading-tight">
+                                <span className="text-sm font-bold text-[#312B5B]">
+                                    {wallet.name}
+                                </span>
+
+                                <span className="text-xs text-[#312B5B] mt-0.5">
+                                    {wallet.description}
+                                </span>
+
+                                </div>
+                            </label>
+                            </div>
+                        );
+                        })}
+                        </div>
+                    </div>
+                    )}
+
+                </div>
+
+                {/* Summary Card */}    
+                <div className="lg:col-span-1 flex justify-center mb-4 mt-20 md:mt-0" style={{ height: summaryHeight }}>
+                    <div className="w-full max-w-sm" style={{ height: summaryHeight }}>
+                    <div className="bg-[#F4F6F8] rounded-tr-xl rounded-tl-xl p-4 border border-gray-100 flex flex-col shadow-md"
+                        
+                    >
+                        <h3 className="text-center text-base font-bold tracking-wider text-[#312B5B]">Payment Summary</h3>
                     
+                        <div className="space-y-2 text-xs mb-4">
+                            <div className="flex justify-between text-[#312B5B]">
+                                <span>Sub Total</span>
+                                <span className="font-medium">{amount}</span>
+                            </div>
+                            <div className="flex justify-between text-[#312B5B]">
+                                <span>Processing Fee</span>
+                                <span className="font-medium">₱{(PROCESSING_FEE).toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-[#312B5B]">
+                                <span>System Fee</span>
+                                <span className="font-medium">₱{(SYSTEM_FEE).toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div className="border-t-3 border-dashed border-[#6F7282] pt-3 mb-4">
+                            <div className={`flex justify-between items-center ${
+                                totalAmount >= 100_000 ? 'flex-col gap-1' : 'flex-row'}`}>
+                                <span className="text-base font-bold text-[#312B5B] whitespace-nowrap">You are sending</span>
+                                <span className="text-base font-bold text-[#312B5B]">₱{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                            </div>
+                            <div className="border-t-3 border-dashed border-[#6F7282] mt-4"/>
+                        
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex justify-between text-xs">
+                            <span className="text-[#312B5B]">Payment Method</span>
+                            <span className="font-bold text-[#312B5B]">{PAYMENT_METHODS.find(m => m.id === method)?.label}</span>
+                            </div>
+                        
+                        </div>
+
+                    </div>
+
+                    <div className='bg-white shadow-lg rounded-bl-lg rounded-br-lg p-5'>
+                        <p className="text-[11px] text-[#312B5B] text-center md:whitespace-nowrap">Make sure the browser bar displays <span className='text-[#312B5B] font-bold'>PulseTech</span></p>
+                    </div>
+                    </div>
+                </div>
+            
+            </div>
+            <div className="mt-4 lg:mt-6 w-full flex justify-center items-center">
+                <button
+                    className="w-1/2 md:w-1/2 lg:w-1/3 bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:bg-[#0a4669] text-white py-2 rounded font-bold text-sm transition-all shadow-md active:scale-97"
+                    onClick={handlePaymentSuccess}
                 >
-                    <h3 className="text-center text-base font-bold tracking-wider text-[#312B5B] mb-4">Payment Summary</h3>
-                
-                    <div className="space-y-2 text-xs mb-4">
-                        <div className="flex justify-between text-[#312B5B]">
-                            <span>Sub Total</span>
-                            <span className="font-medium">{amount}</span>
-                        </div>
-                        <div className="flex justify-between text-[#312B5B]">
-                            <span>Processing Fee</span>
-                            <span className="font-medium">₱{(PROCESSING_FEE).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-[#312B5B]">
-                            <span>System Fee</span>
-                            <span className="font-medium">₱{(SYSTEM_FEE).toFixed(2)}</span>
-                        </div>
-                    </div>
-
-                    <div className="border-t border-dashed border-[#6F7282] pt-3 mb-4">
-                        <div className={`flex justify-between items-center ${
-                            totalAmount >= 100_000 ? 'flex-col gap-1' : 'flex-row'}`}>
-                            <span className="text-lg font-medium text-[#312B5B] whitespace-nowrap">You are sending</span>
-                            <span className="text-lg font-bold text-[#312B5B]">₱{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                        </div>
-                        <div className="border-t border-dashed border-[#6F7282] mt-4"/>
-                    
-                    </div>
-
-                    <div className="space-y-3">
-                        <div className="flex justify-between text-[10px]">
-                        <span className="text-[#312B5B]">Payment Method</span>
-                        <span className="font-bold text-[#312B5B]">{PAYMENT_METHODS.find(m => m.id === method)?.label}</span>
-                        </div>
-                    
-                    </div>
-
-                </div>
-
-                <div className='bg-white shadow-lg rounded-bl-lg rounded-br-lg p-5'>
-                    <p className="text-[9px] text-[#312B5B] text-center">Make sure the browser bar displays <span className='text-[#312B5B] font-bold'>PulseTech</span></p>
-                </div>
-            </div>
-                
+                    Pay Now
+                </button>
             </div>
         </div>
         </div>

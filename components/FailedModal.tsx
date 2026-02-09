@@ -23,11 +23,11 @@ const FailedModal: React.FC = () => {
     });
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#F3E8FF] via-[#E9D5FF] to-[#D8B4FE] p-2 font-sans">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
         
             {/* Header Section */}
             <div className="flex flex-col items-center mb-4">
-                <div className="w-12 h-12 bg-gray-300 rounded-full mb-2 shadow-inner" />
+                <div className="w-20 h-20 bg-gray-300 rounded-full mb-2 shadow-inner" />
                 <h2 className="text-[#312B5B] text-lg font-bold">Business Name</h2>
                 <div className="flex gap-2 mt-1 text-[#312B5B]">
                     <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
