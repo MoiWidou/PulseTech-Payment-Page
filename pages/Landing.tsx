@@ -68,13 +68,13 @@ const BANKS: BankOption[] = [
   {
     id: 'bpi',
     name: 'Bank of the Philippine Island',
-    logo: 'public/logos/bpilogo.png',
+    logo: '/logos/bpilogo.png',
     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
   },
   {
     id: 'ubp',
     name: 'Union Bank of the PH',
-    logo: 'public/logos/ubplogo2.png',
+    logo: '/logos/ubplogo2.png',
     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
   },
 ];
@@ -104,42 +104,42 @@ const ONLINE_METHODS: OnlineOption[] = [
   {
     id: 'bdo',
     name: 'Banco de Oro',
-    logo: 'public/logos/bdologonobg.png', 
+    logo: '/logos/bdologonobg.png', 
     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
     fee: 'System fee (15)',
   },
   {
     id: 'bpi',
     name: 'Bank of the Philippine Island',
-    logo: 'public/logos/bpilogo.png',
+    logo: '/logos/bpilogo.png',
     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
     fee: "",
   },
   {
     id: 'landbank',
     name: 'Landbank of the Philippines',
-    logo: 'public/logos/landbanknobg.png',
+    logo: '/logos/landbanknobg.png',
     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
     fee: 'System fee (P10)',
   },
   {
     id: 'metrobank',
     name: 'Metrobank Express Online',
-    logo: 'public/logos/metrobank.png',
+    logo: '/logos/metrobank.png',
     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
     fee: 'System fee (P10)',
   },
   {
     id: 'sterling',
     name: 'Sterling Bank of Asia',
-    logo: 'public/logos/sterlinglogo.png',
+    logo: '/logos/sterlinglogo.png',
     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
     fee: 'System fee (P10)',
   },
   {
     id: 'ucbp',
     name: 'UCBP Savings',
-    logo: 'public/logos/ucbplogo.svg',
+    logo: '/logos/ucbplogo.svg',
     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
     fee: 'System fee (P10)',
   }
@@ -176,13 +176,13 @@ const DIGITAL: DigitalOption[] = [
   {
     id: 'gcash',
     name: 'Gcash',
-    logo: 'public/logos/gcash.png',
+    logo: '/logos/gcash.png',
     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (2.25%))',
   },
   {
     id: 'maya',
     name: 'Maya',
-    logo: 'public/logos/maya.png',
+    logo: '/logos/maya.png',
     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (2.25%)',
   },
 ];
