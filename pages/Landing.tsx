@@ -310,7 +310,7 @@ const PaymentPage: React.FC = () => {
         };
 
         // Navigate to /success and pass full summary
-        navigate("/status/success", { state: { paymentSummary } });
+        navigate("/status/pending", { state: { paymentSummary } });
     };
 
 

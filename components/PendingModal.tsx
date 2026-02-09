@@ -38,7 +38,7 @@ const PendingModal: React.FC = () => {
             </div>
 
             {/* Main Pending Card */}
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-500">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
                 <div className="p-8 md:p-10 flex flex-col items-center text-center">
                 
                     {/* Pending Icon (Yellow circle with white dots) */}
@@ -74,7 +74,7 @@ const PendingModal: React.FC = () => {
                     {/* Action Button */}
                     <div className="w-full flex justify-center">
                         <button 
-                            className="w-full max-w-[240px] bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:opacity-90 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
+                            className="w-full max-w-[240px] bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
                             onClick={() => navigate("/")}
                         >
                             Make Another Payment
