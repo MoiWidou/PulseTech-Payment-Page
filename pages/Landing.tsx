@@ -297,6 +297,8 @@ const PaymentPage: React.FC = () => {
         }
     })();
 
+    const [testStatus, setTestStatus] = useState<"pending" | "success" | "failed">("pending");
+
     const handlePaymentSuccess = () => {
 
         // Build full summary object
@@ -310,7 +312,8 @@ const PaymentPage: React.FC = () => {
         };
 
         // Navigate to /success and pass full summary
-        navigate("/status/success", { state: { paymentSummary } });
+        // navigate("/status/pending", { state: { paymentSummary } });
+        navigate(`/status/${testStatus}`, { state: { paymentSummary } });
     };
 
 
@@ -839,6 +842,22 @@ const PaymentPage: React.FC = () => {
                     Pay Now
                 </button>
             </div>
+            <div className="flex justify-center gap-2 mb-4">
+            {["pending", "success", "failed"].map((status) => (
+                <button
+                    key={status}
+                    onClick={() => setTestStatus(status as any)}
+                    className={`px-3 py-1 rounded text-xs font-semibold border transition ${
+                        testStatus === status
+                            ? "bg-[#312B5B] text-white border-[#312B5B]"
+                            : "border-gray-300 text-gray-600 hover:bg-gray-100"
+                    }`}
+                >
+                    {status}
+                </button>
+            ))}
+        </div>
+
         </div>
         </div>
     );
