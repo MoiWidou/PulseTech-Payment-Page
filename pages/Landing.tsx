@@ -318,13 +318,13 @@ const PaymentPage: React.FC = () => {
         <div className="min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
         
         {/* Condensed Header */}
-        <header className="flex flex-col items-center mb-4">
-            <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2 mt-10 lg:mt-0" />
-            <h1 className="text-xl font-bold text-[#312B5B]">Business Name</h1>
+        <header className="flex flex-col items-center mb-4 pt-10">
+            <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2" />
+            <h2 className="text-lg font-bold text-[#312B5B]">Business Name</h2>
             <div className="flex gap-4 mt-1 text-[#312B5B]">
-            <Facebook size={18} strokeWidth={3} className="cursor-pointer hover:text-blue-600 transition-colors" />
-            <Instagram size={18} strokeWidth={3} className="cursor-pointer hover:text-pink-600 transition-colors" />
-            <Link2 size={18} strokeWidth={3} className="cursor-pointer hover:text-gray-600 transition-colors" />
+            <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
+                            <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
+                            <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
             </div>
         </header>
 
@@ -337,11 +337,11 @@ const PaymentPage: React.FC = () => {
                 <div className="lg:col-span-2 space-y-5 md:space-x-8">
                     <div ref={formRef}>
                         <section className='mb-5'>
-                            <h2 className="text-base font-bold text-[#312B5B]">Enter Amount</h2>
-                            <p className="text-xs text-[#37416C] mb-2">How much would you like to pay?</p>
+                            <h2 className="text-center font-bold text-[#312B5B] md:text-start">Enter Amount</h2>
+                            <p className="text-xs text-center text-[#37416C] mb-2 md:text-start ">How much would you like to pay?</p>
                             
                             <div className="mb-2 flex justify-center md:justify-start">
-                                <div className="flex items-center w-[70%] md:w-1/2 border border-slate-200 rounded-lg px-2 py-1.5">
+                                <div className="flex items-center w-[70%] md:w-1/2 border border-slate-300 rounded-lg px-2 py-1.5">
                                     <span className="font-bold text-[#312B5B] mr-1">₱</span>
                                     <input
                                     type="text"
@@ -361,7 +361,7 @@ const PaymentPage: React.FC = () => {
                                     className={`w-full py-2 border rounded-lg text-xs font-semibold transition-all ${
                                     amount === val 
                                         ? 'bg-[#312B5B] border-[#312B5B] text-white' 
-                                        : 'border-slate-100 text-slate-500 hover:border-slate-300 cursor-pointer'
+                                        : 'border-slate-300 text-slate-500 hover:border-slate-300 cursor-pointer'
                                     }`}
                                 >
                                     ₱{val.toLocaleString()}
@@ -371,8 +371,8 @@ const PaymentPage: React.FC = () => {
                         </section>
 
                         <section >
-                        <h2 className="text-base font-bold text-[#312B5B]">Payment Method</h2>
-                        <p className="text-xs text-[#37416C] mb-2">Select how you want to pay</p>
+                        <h2 className="text-center md:text-start font-bold text-[#312B5B]">Payment Method</h2>
+                        <p className="text-xs text-center md:text-start text-[#37416C] mb-2">Select how you want to pay</p>
                         
                         <div className="md:grid md:grid-cols-3 grid grid-cols-2 gap-2 mb-3">
                             {PAYMENT_METHODS.map((item) => (
@@ -388,7 +388,7 @@ const PaymentPage: React.FC = () => {
                                         :
                                     method === item.id 
                                     ? 'bg-[#312B5B] border-[#312B5B] text-white' 
-                                    : 'border-slate-100 text-slate-500 hover:border-slate-300 cursor-pointer' 
+                                    : 'border-slate-300 text-slate-500 hover:border-slate-300 cursor-pointer' 
                                     }`}
                             >
                                 
@@ -608,7 +608,7 @@ const PaymentPage: React.FC = () => {
                         return (
                             <div
                             key={bank.id}
-                            className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
+                            className={`flex rounded-md text-xs transition-all duration-300 w-full lg:w-[100%] mx-auto overflow-hidden ${
                                 isSelected
                                 ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
                                 : "border-transparent hover:bg-gray-50"
@@ -636,15 +636,16 @@ const PaymentPage: React.FC = () => {
                                     {bank.name}
                                 </span>
 
-                                <span className="text-xs text-[#312B5B]">
+                                <span className="text-[10px] text-[#312B5B]">
                                     {bank.description}
-                                </span>
-
-                                {bank.fee && (
-                                    <span className="text-xs text-[#312B5B]">
+                                    {bank.fee && (
+                                    <span className="ml-2 text-[10px] text-[#312B5B]">
                                     {bank.fee}
                                     </span>
-                                )}
+                                    )}
+                                </span>
+
+                                
                                 </div>
                             </label>
                             </div>
@@ -781,7 +782,7 @@ const PaymentPage: React.FC = () => {
                     <div className="bg-[#F4F6F8] rounded-tr-xl rounded-tl-xl p-4 border border-gray-100 flex flex-col shadow-md"
                         
                     >
-                        <h3 className="text-center text-base font-bold tracking-wider text-[#312B5B]">Payment Summary</h3>
+                        <h3 className="text-center text-base font-bold tracking-wider text-[#312B5B] mb-8">Payment Summary</h3>
                     
                         <div className="space-y-2 text-xs mb-4">
                             <div className="flex justify-between text-[#312B5B]">
@@ -798,17 +799,17 @@ const PaymentPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="border-t-3 border-dashed border-[#6F7282] pt-3 mb-4">
+                        <div className="border-t border-dashed border-[#6F7282] pt-3 mb-4">
                             <div className={`flex justify-between items-center ${
                                 totalAmount >= 100_000 ? 'flex-col gap-1' : 'flex-row'}`}>
                                 <span className="text-base font-bold text-[#312B5B] whitespace-nowrap">You are sending</span>
                                 <span className="text-base font-bold text-[#312B5B]">₱{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
-                            <div className="border-t-3 border-dashed border-[#6F7282] mt-4"/>
+                            <div className="border-t border-dashed border-[#6F7282] mt-4"/>
                         
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="space-y-3 mb-5">
                             <div className="flex justify-between text-xs">
                             <span className="text-[#312B5B]">Payment Method</span>
                             <span className="font-bold text-[#312B5B]">{PAYMENT_METHODS.find(m => m.id === method)?.label}</span>
