@@ -8,7 +8,6 @@
 
     import { useLocation } from "react-router-dom";
     import SharpSuccessBadge from './logos/sharpbadge';
-    import generateReference from './reference_generator/reference_generator';
     import { useNavigate } from "react-router-dom";
 
     const SuccessModal: React.FC = () => {
