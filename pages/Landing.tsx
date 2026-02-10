@@ -298,7 +298,7 @@ const PaymentPage: React.FC = () => {
         }
     })();
 
-    const [testStatus, setTestStatus] = useState<"pending" | "success" | "failed">("pending");
+    // const [testStatus, setTestStatus] = useState<"pending" | "success" | "failed">("pending");
 
     const handlePaymentSuccess = () => {
         const referenceNo = generateReference(selectedMethodId);
