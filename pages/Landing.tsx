@@ -3,8 +3,11 @@ import {
   CreditCard, Building2, Globe, Store, Wallet, QrCode, 
   Facebook, Instagram, Link2, Banknote,
   type LucideIcon,
-  Monitor, Landmark, BanknoteArrowUp,
-  Smartphone, MapPinned
+  Monitor, 
+//   Landmark, 
+//   BanknoteArrowUp,
+//   MapPinned,
+  Smartphone
 } from 'lucide-react';
 
 import { useNavigate } from "react-router-dom";
@@ -18,13 +21,6 @@ interface PaymentMethod {
     disabled?: boolean;
 }
 
-interface BankOption {
-    id: string;
-    name: string;
-    logo: string;
-    description: string;
-}
-
 interface CardOption {
     id: string;
     name: string;
@@ -32,53 +28,74 @@ interface CardOption {
     description: string;
 }
 
-interface OnlineOption {
-    id: string;
-    name: string;
-    logo: string;
-    description: string;
-    fee: string;
+// interface OnlineOption {
+//     id: string;
+//     name: string;
+//     logo: string;
+//     description: string;
+//     fee: string;
+// }
+
+// interface OTCOption {
+//     id: string;
+//     name: string;
+//     logo: LucideIcon;
+//     description: string;
+// }
+
+// interface DigitalOption {
+//     id: string;
+//     name: string;
+//     logo: string;
+//     description: string;
+// }
+
+interface BankTransfer {
+    provider_code: string;
+    name         : string;
+    short_name   : string
+    main_logo_url: string;
+    status       : string;
+    country_code : string;
+    fee_value    : string | null;
+    fee_type     : string | null;
+    method_code  : string;
+    category     : string;
 }
 
-interface OTCOption {
-    id: string;
-    name: string;
-    logo: LucideIcon;
-    description: string;
+type OnlineBanks    = BankTransfer;
+type CardTransfer   = BankTransfer;
+type WalletTransfer = BankTransfer;
+type OTCTransfer    = BankTransfer;
+
+type apiResponse = {
+    mastercard_visa   : CardTransfer[];
+    bank_fund_transfer: BankTransfer[];
+    e_wallet          : WalletTransfer[];
+    online_banking    : OnlineBanks[];
+    over_the_counter  : OTCTransfer[];
 }
 
-interface DigitalOption {
-    id: string;
-    name: string;
-    logo: string;
-    description: string;
-}
 
 const PRESET_AMOUNTS = [100, 500, 1000, 2500, 5000, 10000];
 
 const PAYMENT_METHODS: PaymentMethod[] = [
-  { id: 'card', label: 'Credit/Debit Card', icon: <CreditCard size={14} /> },
-  { id: 'bank', label: 'Bank Transfer', icon: <Building2 size={14} /> },
-  { id: 'online', label: 'Online Banking', icon: <Globe size={14} /> },
-  { id: 'otc', label: 'Over-the-Counter', icon: <Store size={14} /> },
-  { id: 'wallet', label: 'Digital Cash/Wallet', icon: <Wallet size={14} /> },
+  { id: 'card', label: 'Credit/Debit Card', icon: <CreditCard size={14} />, disabled: true },
+  { id: 'bank', label: 'Bank Transfer', icon: <Building2 size={14} />, disabled: true },
+  { id: 'online', label: 'Online Banking', icon: <Globe size={14} />, disabled: true },
+  { id: 'otc', label: 'Over-the-Counter', icon: <Store size={14} />, disabled: true  },
+  { id: 'wallet', label: 'Digital Cash/Wallet', icon: <Wallet size={14} />, disabled: true },
   { id: 'qr', label: 'QRPH', icon: <QrCode size={14}/>, disabled: true },
 ];
 
-const BANKS: BankOption[] = [
-  {
-    id: 'bpi',
-    name: 'Bank of the Philippine Island',
-    logo: '/logos/bpilogo.png',
-    description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
-  },
-  {
-    id: 'ubp',
-    name: 'Union Bank of the PH',
-    logo: '/logos/ubplogo2.png',
-    description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
-  },
-];
+const METHOD_API_MAP: Record<string, string> = {
+  card: "mastercard_visa",
+  bank: "bank_fund_transfer",
+  online: "online_banking",
+  otc: "over_the_counter",
+  wallet: "e_wallet",
+  qr: "qrph",
+};
 
 const CARDS: CardOption[] = [
   {
@@ -101,102 +118,103 @@ const CARDS: CardOption[] = [
   }
 ];
 
-const ONLINE_METHODS: OnlineOption[] = [
-  {
-    id: 'bdo',
-    name: 'Banco de Oro',
-    logo: '/logos/bdologonobg.png', 
-    description: "Use your bank's mobile app to transfer funds. Additional steps required.",
-    fee: 'System fee (15)',
-  },
-  {
-    id: 'bpi',
-    name: 'Bank of the Philippine Island',
-    logo: '/logos/bpilogo.png',
-    description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
-    fee: "",
-  },
-  {
-    id: 'landbank',
-    name: 'Landbank of the Philippines',
-    logo: '/logos/landbanknobg.png',
-    description: "Use your bank's mobile app to transfer funds. Additional steps required.",
-    fee: 'System fee (P10)',
-  },
-  {
-    id: 'metrobank',
-    name: 'Metrobank Express Online',
-    logo: '/logos/metrobank.png',
-    description: "Use your bank's mobile app to transfer funds. Additional steps required.",
-    fee: 'System fee (P10)',
-  },
-  {
-    id: 'sterling',
-    name: 'Sterling Bank of Asia',
-    logo: '/logos/sterlinglogo.png',
-    description: "Use your bank's mobile app to transfer funds. Additional steps required.",
-    fee: 'System fee (P10)',
-  },
-  {
-    id: 'ucbp',
-    name: 'UCBP Savings',
-    logo: '/logos/ucbplogo.svg',
-    description: "Use your bank's mobile app to transfer funds. Additional steps required.",
-    fee: 'System fee (P10)',
-  }
-];
+// const ONLINE_METHODS: OnlineOption[] = [
+//   {
+//     id: 'bdo',
+//     name: 'Banco de Oro',
+//     logo: '/logos/bdologonobg.png', 
+//     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
+//     fee: 'System fee (15)',
+//   },
+//   {
+//     id: 'bpi',
+//     name: 'Bank of the Philippine Island',
+//     logo: '/logos/bpilogo.png',
+//     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (P10)',
+//     fee: "",
+//   },
+//   {
+//     id: 'landbank',
+//     name: 'Landbank of the Philippines',
+//     logo: '/logos/landbanknobg.png',
+//     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
+//     fee: 'System fee (P10)',
+//   },
+//   {
+//     id: 'metrobank',
+//     name: 'Metrobank Express Online',
+//     logo: '/logos/metrobank.png',
+//     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
+//     fee: 'System fee (P10)',
+//   },
+//   {
+//     id: 'sterling',
+//     name: 'Sterling Bank of Asia',
+//     logo: '/logos/sterlinglogo.png',
+//     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
+//     fee: 'System fee (P10)',
+//   },
+//   {
+//     id: 'ucbp',
+//     name: 'UCBP Savings',
+//     logo: '/logos/ucbplogo.svg',
+//     description: "Use your bank's mobile app to transfer funds. Additional steps required.",
+//     fee: 'System fee (P10)',
+//   }
+// ];
 
-const OTC_METHODS: OTCOption[] = [
-  {
-    id: 'nearest',
-    name: 'Nearest Partner Outlets & Banks',
-    logo: MapPinned, 
-    description: "Get directions to the nearest branches where you can to the Over-The-Counter transaction.",
-  },
-  {
-    id: 'banks',
-    name: 'Banks',
-    logo: Landmark,
-    description: 'BDO, Metrobank, BPI, Landbank, PNB, Security Bank, Unionbank, RCBC, etc.',
-  },
-  {
-    id: 'remit',
-    name: 'Remittance/Payment Centers',
-    logo: BanknoteArrowUp,
-    description: "Deposit payment to any Remmittance Centers, Payment Centers, Pawnshops, etc.",
-  },
-  {
-    id: 'convenience',
-    name: 'Convenience Stores',
-    logo: Store,
-    description: "Branches are open 24/7, 7-Eleven, Ministop, Family Mart, Lawson, All Day, etc.",
-  }
-];
+// const OTC_METHODS: OTCOption[] = [
+//   {
+//     id: 'nearest',
+//     name: 'Nearest Partner Outlets & Banks',
+//     logo: MapPinned, 
+//     description: "Get directions to the nearest branches where you can to the Over-The-Counter transaction.",
+//   },
+//   {
+//     id: 'banks',
+//     name: 'Banks',
+//     logo: Landmark,
+//     description: 'BDO, Metrobank, BPI, Landbank, PNB, Security Bank, Unionbank, RCBC, etc.',
+//   },
+//   {
+//     id: 'remit',
+//     name: 'Remittance/Payment Centers',
+//     logo: BanknoteArrowUp,
+//     description: "Deposit payment to any Remmittance Centers, Payment Centers, Pawnshops, etc.",
+//   },
+//   {
+//     id: 'convenience',
+//     name: 'Convenience Stores',
+//     logo: Store,
+//     description: "Branches are open 24/7, 7-Eleven, Ministop, Family Mart, Lawson, All Day, etc.",
+//   }
+// ];
 
-const DIGITAL: DigitalOption[] = [
-  {
-    id: 'gcash',
-    name: 'Gcash',
-    logo: '/logos/gcash.png',
-    description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (2.25%))',
-  },
-  {
-    id: 'maya',
-    name: 'Maya',
-    logo: '/logos/maya.png',
-    description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (2.25%)',
-  },
-];
+// const DIGITAL: DigitalOption[] = [
+//   {
+//     id: 'gcash',
+//     name: 'Gcash',
+//     logo: '/logos/gcash.png',
+//     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (2.25%))',
+//   },
+//   {
+//     id: 'maya',
+//     name: 'Maya',
+//     logo: '/logos/maya.png',
+//     description: 'Sending is FREE. Recipients pays for the system fee (P10) + bank fee (2.25%)',
+//   },
+// ];
 
 const PaymentPage: React.FC = () => {
+
     const navigate = useNavigate();
     const [ amount, setAmount] = useState<number>(0);
-    const [ method, setMethod] = useState<string>('bank');
-    const [ selectedBank, setSelectedBank] = useState<string>('bpi');
+    const [ method, setMethod] = useState<string>('card');
+    const [ selectedBank, setSelectedBank] = useState<string>('');
     const [ selectedCard, setSelectedCard] = useState<string>('credit-card');
-    const [ selectedOnlineBank, setSelectedOnlineBank] = useState<string>('bdo');
-    const [ selectedOnlineOTC, setSelectedOnlineOTC] = useState<string>('bdo');
-    const [ selectedOnlineWallet, setSelectedOnlineWallet] = useState<string>('bdo');
+    const [ selectedOnlineBank, setSelectedOnlineBank] = useState<string>('');
+    const [ selectedOnlineOTC, setSelectedOnlineOTC] = useState<string>('');
+    const [ selectedOnlineWallet, setSelectedOnlineWallet] = useState<string>('');
 
     // const [ creditCardName, setCreditCardName] = useState("");
     // const [ creditCardNumber, setCreditCardNumber] = useState("");
@@ -223,6 +241,12 @@ const PaymentPage: React.FC = () => {
 
     const totalAmount = useMemo(() => amount + PROCESSING_FEE + SYSTEM_FEE, [amount]);
 
+    const success_url         = import.meta.env.VITE_SUCCESS_REDIRECT_URL;
+    const failed_url          = import.meta.env.VITE_FAILED_REDIRECT_URL;
+    const base_url            = import.meta.env.VITE_API_BASE_URL;
+    const username            = import.meta.env.VITE_USERNAME;
+    const payment_methods_url = import.meta.env.VITE_PAYMENT_METHODS_URL;
+
     const handleAmountChange = (val: string) => {
         const num = parseInt(val.replace(/\D/g, '')) || 0;
         setAmount(num);
@@ -231,22 +255,21 @@ const PaymentPage: React.FC = () => {
     // When selecting a payment method, initialize its nested selection
     const handleMethodSelect = (methodId: string) => {
         setMethod(methodId);
-
         switch (methodId) {
             case 'wallet':
-                setSelectedOnlineWallet(DIGITAL[0].id);
+                setSelectedOnlineWallet(availableWalletBanks[0].name);
                 break;
             case 'card':
                 setSelectedCard(CARDS[0].id);
                 break;
             case 'bank':
-                setSelectedBank(BANKS[0].id);
+                setSelectedBank(availableBanks[0].name);
                 break;
             case 'online':
-                setSelectedOnlineBank(ONLINE_METHODS[0].id);
+                setSelectedOnlineBank(availableOnlineBanks[0].name);
                 break;
             case 'otc':
-                setSelectedOnlineOTC(OTC_METHODS[0].id);
+                setSelectedOnlineOTC(availableOTCBanks[0].name);
                 break;
         }
     };
@@ -264,18 +287,177 @@ const PaymentPage: React.FC = () => {
         return () => observer.disconnect();
     }, []);
 
+    // const [_data, setData] = useState(null);
+    const [ _error, setError] = useState <string | null >(null);
+    const [ paymentmethods, setPaymentMethods] = useState<PaymentMethod[]>(PAYMENT_METHODS);
+    const [ loadingPaymentMethod, setLoadingPaymentMethod ] = useState (true);
+    const [ availableBanks, setAvailableBanks ] = useState<BankTransfer[]>([]);
+    const [ availableOnlineBanks, setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
+    const [ availableOTCBanks, setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
+    const [ availableWalletBanks, setAvailableWalletBanks] = useState<WalletTransfer[]>([]);
+
+    // function sleep(ms: number) {
+    //     return new Promise((resolve) => setTimeout(resolve, ms));
+    // }
+    const [ apiResponse, setApiResponse] = useState<apiResponse>();
+    const [ methodCodePayload, setMethodCodePayload] = useState("bank_card_2");
+    const [ providerCodePayload, setProviderCodePayload] = useState("mastercard_visa");
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function fetchData() {
+            
+            try {
+            setLoadingPaymentMethod (true)            
+            setError(null);
+
+            // await sleep(5000);
+
+            const response = await fetch(payment_methods_url, {
+                headers: {
+                username,
+                Accept: "application/json",
+                },
+                signal: controller.signal,
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            // Set available banks
+            setAvailableBanks(apiData.bank_fund_transfer || [])
+            setAvailableOnlineBanks(apiData.online_banking || [])
+            setAvailableOTCBanks(apiData.over_the_counter || [])
+            setAvailableWalletBanks(apiData.e_wallet || [])
+            setApiResponse(apiData)
+            console.log("response", apiData)
+
+            const updatedMethods = PAYMENT_METHODS.map((method) => {
+                const apiKey = METHOD_API_MAP[method.id];
+                const apiGroup = apiData?.[apiKey];
+
+                const isEnabled =
+                Array.isArray(apiGroup) &&
+                apiGroup.some((entry: { status: string }) => entry.status === "on");
+
+                return {
+                ...method,
+                disabled: !isEnabled,
+                };
+            });
+
+            setPaymentMethods(updatedMethods);
+            console.log("updatedMethods = ", updatedMethods)
+            } catch (err) {
+            if (err instanceof Error) setError(err.message);
+            else setError("Something went wrong");
+            } finally {
+            setLoadingPaymentMethod(false);
+            }
+        }
+
+        fetchData();
+
+        return () => controller.abort();
+    }, [username]);
+
+    useEffect(() => {
+        let methodCode = "";
+        let providerCode = "";
+
+        switch (method) {
+            case "card":
+                {
+                    const cardData = apiResponse?.mastercard_visa?.[0];
+                    console.log("cardData",cardData)
+                if (cardData) {
+                    methodCode = cardData.method_code;
+                    providerCode = cardData.provider_code;
+                }
+                break;
+            }
+            case "bank": {
+                const selectedBankData = availableBanks.find(
+                    (item: BankTransfer) => item.name === selectedBank
+                );
+
+                if (selectedBankData) {
+                    methodCode = selectedBankData.method_code;
+                    providerCode = selectedBankData.provider_code;
+                } else {
+                    console.warn("Selected bank not found in API response:", selectedBank);
+                }
+                break;
+            }
+
+            case "online":{
+                const selectedOnlineBankData = availableOnlineBanks.find(
+                    (item: OnlineBanks) => item.name === selectedOnlineBank
+                );
+
+                if (selectedOnlineBankData) {
+                    methodCode = selectedOnlineBankData.method_code;
+                    providerCode = selectedOnlineBankData.provider_code;
+                } else {
+                    console.warn("Selected online bank not found in API response:", selectedOnlineBank);
+                }
+                break;
+            }
+
+            case "otc":{
+                const selectedOTCBankData = availableOTCBanks.find(
+                    (item: OTCTransfer) => item.name === selectedOnlineOTC
+                );
+
+                if (selectedOTCBankData) {
+                    methodCode = selectedOTCBankData.method_code;
+                    providerCode = selectedOTCBankData.provider_code;
+                } else {
+                    console.warn("Selected otc bank not found in API response:", selectedOnlineOTC);
+                }
+                break;
+            }
+
+            case "wallet":{
+                const selectedWalletData = availableWalletBanks.find(
+                    (item: WalletTransfer) => item.name === selectedOnlineWallet
+                );
+
+                if (selectedWalletData) {
+                    methodCode = selectedWalletData.method_code;
+                    providerCode = selectedWalletData.provider_code;
+                } else {
+                    console.warn("Selected wallet bank not found in API response:", selectedOnlineWallet);
+                }
+                break;
+            }
+            case "qr":
+                providerCode = "qrph"; // if no sub-selection
+                break;
+        }
+
+        setMethodCodePayload(methodCode);
+        setProviderCodePayload(providerCode);
+
+        console.log("methodCode:", methodCode, "providerCode:", providerCode);
+    }, [username, method, selectedBank, selectedOnlineBank, selectedOnlineOTC, selectedOnlineWallet]);
+
     const selectedMethodId = (() => {
         switch (method) {
             case 'wallet':
-                return DIGITAL.find(w => w.id === selectedOnlineWallet)?.id || '';
+                return availableWalletBanks.find(w => w.name === selectedOnlineWallet)?.name || '';
             case 'card':
                 return CARDS.find(c => c.id === selectedCard)?.id || '';
             case 'bank':
-                return BANKS.find(b => b.id === selectedBank)?.id || '';
+                return availableBanks.find(b => b.name === selectedBank)?.name || '';
             case 'online':
-                return ONLINE_METHODS.find(o => o.id === selectedOnlineBank)?.id || '';
+                return availableOnlineBanks.find(o => o.name === selectedOnlineBank)?.name || '';
             case 'otc':
-                return OTC_METHODS.find(o => o.id === selectedOnlineOTC)?.id || '';
+                return availableOTCBanks.find(o => o.name === selectedOnlineOTC)?.name || '';
             default:
                 return PAYMENT_METHODS.find(m => m.id === method)?.id || '';
         }
@@ -284,15 +466,15 @@ const PaymentPage: React.FC = () => {
     const selectedMethodLabel = (() => {
         switch (method) {
             case 'wallet':
-                return DIGITAL.find(w => w.id === selectedOnlineWallet)?.name || '';
+                return availableWalletBanks.find(w => w.name === selectedOnlineWallet)?.name || '';
             case 'card':
                 return CARDS.find(c => c.id === selectedCard)?.name || '';
             case 'bank':
-                return BANKS.find(b => b.id === selectedBank)?.name || '';
+                return availableBanks.find(b => b.name === selectedBank)?.name || '';
             case 'online':
-                return ONLINE_METHODS.find(o => o.id === selectedOnlineBank)?.name || '';
+                return availableOnlineBanks.find(o => o.name === selectedOnlineBank)?.name || '';
             case 'otc':
-                return OTC_METHODS.find(o => o.id === selectedOnlineOTC)?.name || '';
+                return availableOTCBanks.find(o => o.name === selectedOnlineOTC)?.name || '';
             default:
                 return PAYMENT_METHODS.find(m => m.id === method)?.label || '';
         }
@@ -300,33 +482,115 @@ const PaymentPage: React.FC = () => {
 
     // const [testStatus, setTestStatus] = useState<"pending" | "success" | "failed">("pending");
 
-    const handlePaymentSuccess = () => {
-        const referenceNo = generateReference(selectedMethodId);
+    const handlePaymentSuccess = async() => {
+        console.log(success_url)
+        console.log(failed_url)
 
-        // Build full summary object
-        const paymentSummary = {
-            subTotal: amount,
-            processingFee: PROCESSING_FEE,
-            systemFee: SYSTEM_FEE,
-            totalAmount,
-            method: selectedMethodLabel,
-            methodId: selectedMethodId, 
-            referenceNo, // <- pass it here
-            dateTime: new Date().toLocaleString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true
-        }),
-        };
+        try{
+            const referenceNo = generateReference(selectedMethodId);
 
-        // Navigate to /success and pass full summary
-        navigate("/status/success", { state: { paymentSummary } });
-        // navigate(`/status/${testStatus}`, { state: { paymentSummary } });
+            // Build full summary object
+            const paymentSummary = {
+                subTotal: amount,
+                processingFee: PROCESSING_FEE,
+                systemFee: SYSTEM_FEE,
+                totalAmount,
+                method: selectedMethodLabel,
+                methodId: selectedMethodId, 
+                referenceNo, // <- pass it here
+                dateTime: new Date().toLocaleString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true
+            }),
+
+            };
+
+            const payload = {
+                amount              : amount,
+                method_code         : methodCodePayload,
+                provider_code       : providerCodePayload,
+                success_redirect_url: success_url,
+                failed_redirect_url : failed_url
+            }
+
+            const payment_response = await fetch(`${base_url}/payment-page/payment`, {
+                method: "POST",
+                headers: {
+                    "username": username,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!payment_response.ok) {
+                throw new Error("Payment request failed");
+            }
+
+            const data = await payment_response.json()
+            console.log("API response:", data);
+
+            switch (data.status) {
+                case "SUCCESS":
+                    navigate("/status/success", { state: { paymentSummary } });
+                    break;
+
+                case "PENDING":
+                    navigate("/status/pending", { state: { paymentSummary } });
+                    break;
+
+                case "FAILED":
+                    navigate("/status/failed", { state: { paymentSummary } });
+                    break;
+
+                default:
+                    console.warn("Unknown payment status:", data.status);
+                    navigate("/status/failed", { state: { paymentSummary } });
+            }
+        }catch (error){
+            console.error("Payment error:", error);
+            // fallback navigation
+            navigate("/status/failed");
+        }
     };
 
+    // async function generatePaymentLink() {
+    //     const payload = {
+    //         amount          : amount,
+    //         method_code     : "",
+    //         provider_code   : "",
+    //         success_redirect_url: success_url,
+    //         failed_redirect_url: failed_url
+    //     }
+
+    //     const payment_response = await fetch(`${base_url}/payment-page/payment`, {
+    //         method: "POST",
+    //         body: JSON.stringify(payload)
+    //     });
+
+    //     const data = await payment_response.json()
+    //     console.log(data);
+    // }
+
+    const Spinner = () => (
+        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-blue-300 rounded-full animate-spin" />
+    );
+
+    useEffect(() => {
+        if (availableBanks.length > 0 && !selectedBank) {
+            // Default to first enabled bank
+            const firstBank = availableBanks.find(b => b.status === "on");
+            if (firstBank) setSelectedBank(firstBank.name); 
+        }
+
+    }, [availableBanks, methodCodePayload, providerCodePayload, method]);
+
+    useEffect(() => {
+        console.log("Selected bank changed:", selectedBank);
+    }, [selectedBank]);
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
@@ -389,7 +653,7 @@ const PaymentPage: React.FC = () => {
                         <p className="text-xs text-center md:text-start text-[#37416C] mb-2">Select how you want to pay</p>
                         
                         <div className="md:grid md:grid-cols-3 grid grid-cols-2 gap-2 mb-3">
-                            {PAYMENT_METHODS.map((item) => (
+                            {paymentmethods.map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => {
@@ -397,7 +661,7 @@ const PaymentPage: React.FC = () => {
                                 }}
                                 className={`w-full flex flex-col items-center justify-center gap-1 py-2 px-1 border font-semibold rounded-lg transition-all ${
                                 
-                                    item.disabled
+                                    loadingPaymentMethod || item.disabled
                                         ? 'opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-200'
                                         :
                                     method === item.id 
@@ -407,10 +671,22 @@ const PaymentPage: React.FC = () => {
                             >
                                 
                                 <span className="flex text-xs text-center justify-center whitespace-nowrap leading-tight">
-                                    <span className='mr-1'>
+                                    {loadingPaymentMethod ? (
+                                            <Spinner />
+                                        ) : (
+                                            <>
+
+                                            <span className='mr-1'>
                                         {item.icon}
                                     </span>
-                                        {item.label}
+
+                                            {item.label}
+                                            </>
+                                        )}
+                                    
+                                    
+
+                                        
                                 </span>
                             </button>
                             ))}
@@ -420,6 +696,7 @@ const PaymentPage: React.FC = () => {
                     
                     {/* Extra Selections */}
                     {method === 'card' && (
+
                     <div >
                         <p className="p-2 text-xs font-bold text-[#312B5B]">
                             What type of card are you using?
@@ -477,6 +754,7 @@ const PaymentPage: React.FC = () => {
                     )}
 
                     {method === 'bank' && (
+                        
                         <div>
                             <p className="p-2 text-xs font-bold text-[#312B5B]">
                                 What bank will you use?
@@ -488,12 +766,12 @@ const PaymentPage: React.FC = () => {
                                 maxHeight: '16rem'
                             }}
                             >
-                            {BANKS.map((bank) => {
-                            const isSelected = selectedBank === bank.id;
-
+                            {availableBanks.map((bank) => {
+                            const isSelected = selectedBank === bank.name;
+                            
                             return (
                                 <div
-                                key={bank.id}
+                                key={bank.name}
                                 className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                     isSelected
                                     ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
@@ -505,29 +783,28 @@ const PaymentPage: React.FC = () => {
                                     type="radio"
                                     name="bank"
                                     checked={isSelected}
-                                    onChange={() => setSelectedBank(bank.id)}
+                                    onChange={() => setSelectedBank(bank.name)}
                                     className="w-4 h-4 accent-[#312B5B] shrink-0"
                                     />
 
                                     <img
-                                    src={bank.logo}
-                                    alt=""
-                                    className="w-5 h-5 object-contain shrink-0"
+                                        src={bank.main_logo_url}
+                                        alt=""
+                                        className="w-9 h-9 object-contain shrink-0"
                                     />
 
                                     <div className="flex flex-col">
                                     <span className="text-sm font-bold text-[#312B5B]">
                                         {bank.name}
                                     </span>
-                                    <span className="text-xs text-[#312B5B]">
+                                    {/* <span className="text-xs text-[#312B5B]">
                                         {bank.description}
-                                    </span>
+                                    </span> */}
                                     </div>
                                 </label>
                                 </div>
                             );
                             })}
-
 
                             </div>
                         </div>
@@ -616,13 +893,13 @@ const PaymentPage: React.FC = () => {
                         }}
                         >
 
-                        {ONLINE_METHODS.map((bank) => {
-                        const isSelected = selectedOnlineBank === bank.id;
+                        {availableOnlineBanks.map((bank) => {
+                        const isSelected = selectedOnlineBank === bank.name;
 
                         return (
                             <div
-                            key={bank.id}
-                            className={`flex rounded-md text-xs transition-all duration-300 w-full lg:w-[100%] mx-auto overflow-hidden ${
+                            key={bank.name}
+                            className={`flex rounded-md text-xs transition-all duration-300 w-full lg:w-full mx-auto overflow-hidden ${
                                 isSelected
                                 ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
                                 : "border-transparent hover:bg-gray-50"
@@ -633,13 +910,13 @@ const PaymentPage: React.FC = () => {
                                 type="radio"
                                 name="onlineMethod"
                                 checked={isSelected}
-                                onChange={() => setSelectedOnlineBank(bank.id)}
+                                onChange={() => setSelectedOnlineBank(bank.name)}
                                 className="w-4 h-4 accent-[#312B5B] shrink-0"
                                 />
 
-                                <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                                <div className="w-9 h-9 rounded flex items-center justify-center shrink-0 overflow-hidden">
                                 <img
-                                    src={bank.logo}
+                                    src={bank.main_logo_url}
                                     alt={bank.name}
                                     className="w-full h-full object-contain p-1"
                                 />
@@ -650,14 +927,14 @@ const PaymentPage: React.FC = () => {
                                     {bank.name}
                                 </span>
 
-                                <span className="text-[10px] text-[#312B5B]">
+                                {/* <span className="text-[10px] text-[#312B5B]">
                                     {bank.description}
                                     {bank.fee && (
                                     <span className="ml-2 text-[10px] text-[#312B5B]">
                                     {bank.fee}
                                     </span>
                                     )}
-                                </span>
+                                </span> */}
 
                                 
                                 </div>
@@ -684,12 +961,12 @@ const PaymentPage: React.FC = () => {
                         }}
                         >
 
-                        {OTC_METHODS.map((otc) => {
-                        const isSelected = selectedOnlineOTC === otc.id;
-                        const Icon = otc.logo;
+                        {availableOTCBanks.map((otc) => {
+                        const isSelected = selectedOnlineOTC === otc.name;
+                        // const Icon = otc.logo;
                         return (
                             <div
-                            key={otc.id}
+                            key={otc.name}
                             className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                 isSelected
                                 ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
@@ -701,22 +978,28 @@ const PaymentPage: React.FC = () => {
                                 type="radio"
                                 name="onlineMethod"
                                 checked={isSelected}
-                                onChange={() => setSelectedOnlineOTC(otc.id)}
+                                onChange={() => setSelectedOnlineOTC(otc.name)}
                                 className="w-4 h-4 accent-[#312B5B] shrink-0"
                                 />
 
-                                <div className="w-5 h-5 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                                {/* <div className="w-5 h-5 rounded flex items-center justify-center shrink-0 overflow-hidden">
                                     <Icon/>
-                                </div>
+                                </div> */}
+
+                                <img
+                                    src={otc.main_logo_url}
+                                    alt={otc.name}
+                                    className="w-10 h-10 object-contain p-1"
+                                />
 
                                 <div className="flex flex-col leading-tight">
                                 <span className="text-sm font-bold text-[#312B5B]">
                                     {otc.name}
                                 </span>
 
-                                <span className="text-xs text-[#312B5B] mt-0.5">
+                                {/* <span className="text-xs text-[#312B5B] mt-0.5">
                                     {otc.description}
-                                </span>
+                                </span> */}
 
                                 </div>
                             </label>
@@ -741,12 +1024,12 @@ const PaymentPage: React.FC = () => {
                         }}
                         >
 
-                        {DIGITAL.map((wallet) => {
-                        const isSelected = selectedOnlineWallet === wallet.id;
+                        {availableWalletBanks.map((wallet) => {
+                        const isSelected = selectedOnlineWallet === wallet.name;
 
                         return (
                             <div
-                            key={wallet.id}
+                            key={wallet.name}
                             className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                 isSelected
                                 ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
@@ -758,13 +1041,13 @@ const PaymentPage: React.FC = () => {
                                 type="radio"
                                 name="onlineMethod"
                                 checked={isSelected}
-                                onChange={() => setSelectedOnlineWallet(wallet.id)}
+                                onChange={() => setSelectedOnlineWallet(wallet.name)}
                                 className="w-4 h-4 accent-[#312B5B] shrink-0"
                                 />
 
                                 <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
                                     <img
-                                        src={wallet.logo}
+                                        src={wallet.main_logo_url}
                                         alt={wallet.name}
                                         className="w-full h-full object-contain"
                                     />
@@ -774,10 +1057,10 @@ const PaymentPage: React.FC = () => {
                                 <span className="text-sm font-bold text-[#312B5B]">
                                     {wallet.name}
                                 </span>
-
+                                {/* 
                                 <span className="text-xs text-[#312B5B] mt-0.5">
                                     {wallet.description}
-                                </span>
+                                </span> */}
 
                                 </div>
                             </label>
