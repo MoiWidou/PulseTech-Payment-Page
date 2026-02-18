@@ -626,7 +626,7 @@ const PaymentPage: React.FC = () => {
         </header>
 
         {/* Main Container */}
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden p-6 md:p-8">
+        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden p-6 md:p-8 mb-10 md:mb-5">
             
             <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-6">
             
@@ -1093,7 +1093,7 @@ const PaymentPage: React.FC = () => {
                 </div>
 
                 {/* Summary Card */}    
-                <div className="lg:col-span-1 flex justify-center mb-4 mt-20 md:mt-0" style={{ height: summaryHeight }}>
+                <div className="lg:col-span-1 flex justify-center mb-0 md:mb-4 mt-20 md:mt-0" style={{ height: summaryHeight }}>
                     <div className="w-full max-w-sm" style={{ height: summaryHeight }}>
                     <div className="bg-[#F4F6F8] rounded-tr-xl rounded-tl-xl p-4 border border-gray-100 flex flex-col shadow-md"
                         
@@ -1142,7 +1142,7 @@ const PaymentPage: React.FC = () => {
                 </div>
             
             </div>
-            <div className="mt-4 lg:mt-6 w-full flex justify-center items-center">
+            <div className="mt-0 md:mt-4 lg:mt-6 w-full flex justify-center items-center">
                 <button
                     disabled={amount <= 99}
                     className={`w-1/2 md:w-1/2 lg:w-1/3 py-2 rounded font-bold text-sm transition-all duration-300 shadow-md transform
