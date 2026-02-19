@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   CreditCard, Building2, Globe, Store, Wallet, QrCode, 
-  Facebook, Instagram, Link2, Banknote,
+//   Facebook, Instagram, Link2, 
+  Banknote,
   type LucideIcon,
   Monitor, 
 //   Landmark, 
@@ -10,7 +11,7 @@ import {
   Smartphone
 } from 'lucide-react';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams} from "react-router-dom";
 // import generateReference from '../components/reference_generator/reference_generator';
 
 // --- Types & Interfaces ---
@@ -227,6 +228,7 @@ const PaymentPage: React.FC = () => {
     const [ selectedOnlineOTC, setSelectedOnlineOTC] = useState<string>('');
     const [ selectedOnlineWallet, setSelectedOnlineWallet] = useState<string>('');
     const [ processingFee, _setProcessingFee] = useState<string | null>('');
+    const { merchant_username } = useParams();
 
     // const [ creditCardName, setCreditCardName] = useState("");
     // const [ creditCardNumber, setCreditCardNumber] = useState("");
@@ -260,6 +262,7 @@ const PaymentPage: React.FC = () => {
     const base_url            = import.meta.env.VITE_API_BASE_URL;
     const username            = import.meta.env.VITE_USERNAME;
     const payment_methods_url = import.meta.env.VITE_PAYMENT_METHODS_URL;
+    const merchant_name_url   = import.meta.env.VITE_MERCHANT_URL;
 
     const handleAmountChange = (val: string) => {
         const num = parseInt(val.replace(/\D/g, '')) || 0;
@@ -316,7 +319,12 @@ const PaymentPage: React.FC = () => {
     const [ paymentResponse, setPaymentResponse] = useState<paymentResponse>();
     const [ methodCodePayload, setMethodCodePayload] = useState("bank_card_2");
     const [ providerCodePayload, setProviderCodePayload] = useState("mastercard_visa");
+    const [ paymentLoading, setPaymentLoading ] = useState (false);
+    const [ merchantName, setMerchantName] = useState ("");
+    const [ loadingMerchant, setLoadingMerchant] = useState(false);
+    const [ merchantError, setMerchantError] = useState<string | null>(null);
 
+    // UseEffect for fetching payment methods
     useEffect(() => {
         const controller = new AbortController();
 
@@ -380,6 +388,68 @@ const PaymentPage: React.FC = () => {
         return () => controller.abort();
     }, [username]);
 
+    // const sleep = (ms: number) =>
+    //     new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+    // UseEffect to fetch Merchant Name (Business Name)
+    useEffect(() => {
+      
+        if (!merchant_username) return;
+        const controller = new AbortController();
+
+        async function fetchMerchantName() {
+            try {
+                setLoadingMerchant(true);
+                setMerchantError(null);
+
+                const response = await fetch(`${merchant_name_url.replace(/\/$/, "")}/${merchant_username}`, {
+                    headers: { username, Accept: "application/json" },
+                    signal: controller.signal,
+                });
+
+                
+                if (!response.ok) {
+                    // If server returns 500 or 404, navigate to 404 page
+                    if (response.status >= 400 && response.status < 600) {
+                        navigate("/404", { replace: true });
+                        return;
+                    }
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.merchant_name) {
+                    setMerchantName(data.merchant_name);
+                } else {
+                    navigate("/404", { replace: true });
+                }
+
+                
+
+            } catch (err) {
+                console.error("Merchant fetch error:", err);
+                navigate("/404", { replace: true });
+            } finally {
+                // await sleep(5000);
+                setLoadingMerchant(false);
+            }
+        }
+
+        fetchMerchantName();
+
+        return () => controller.abort();
+    }, [merchant_username, username, merchant_name_url, navigate]);
+
+
+    // UseEffect for console logging the error
+    useEffect(() => {
+        if (merchantError) {
+            console.error("Merchant Fetch Error:", merchantError);
+        }
+    }, [merchantError]);
+
+    // UseEffect for setting the method code and provider code to be sent on create payment endpoint
     useEffect(() => {
         let methodCode = "";
         let providerCode = "";
@@ -502,9 +572,8 @@ const PaymentPage: React.FC = () => {
     const handlePaymentSuccess = async() => {
         // console.log(success_url)
         // console.log(failed_url)
-
         try{
-
+            setPaymentLoading(true)
             const payload = {
                 amount              : amount,
                 method_code         : methodCodePayload,
@@ -530,39 +599,45 @@ const PaymentPage: React.FC = () => {
             // console.log("API response:", data);
 
             
-            // Build full summary object
-            const paymentSummary = {
-                subTotal: amount,
-                processingFee: data.fees.processing_fee,
-                systemFee: data.fees.system_fee,
-                totalAmount,
-                method: selectedMethodLabel,
-                methodId: selectedMethodId, 
-                referenceNo: data.reference_id, 
-                dateTime: new Date().toLocaleString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true
-                }),
+            const subTotal = Number(amount); // from your state/input
+            const processingFee = Number(data.fees.processing_fee);
+            const systemFee = Number(data.fees.system_fee);
 
-            };
+            const totalAmount = subTotal + processingFee + systemFee;
+
+            // Build full summary object
+                const paymentSummary = {
+                    subTotal,
+                    processingFee,
+                    systemFee,
+                    totalAmount,
+                    method: selectedMethodLabel,
+                    methodId: selectedMethodId, 
+                    referenceNo: data.reference_id, 
+                    dateTime: new Date().toLocaleString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true
+                    }),
+                    merchantName,
+                };
 
             setPaymentResponse(data);
 
             switch (data.status) {
                 case "SUCCESS":
-                    navigate("/status/success", { state: { paymentSummary } });
+                    navigate(`/${merchant_username}/status/success`, { state: { paymentSummary } });
                     break;
 
                 case "PENDING":
-                    navigate("/status/pending", { state: { paymentSummary } });
+                    navigate(`/${merchant_username}/status/pending`, { state: { paymentSummary } });
                     break;
 
                 case "FAILED":
-                    navigate("/status/failed", { state: { paymentSummary } });
+                    navigate(`/${merchant_username}/status/failed`, { state: { paymentSummary } });
                     break;
 
                 default:
@@ -573,6 +648,8 @@ const PaymentPage: React.FC = () => {
             console.error("Payment error:", error);
             // fallback navigation
             navigate("/status/failed");
+        }finally{
+            setPaymentLoading(false);
         }
     };
 
@@ -611,17 +688,75 @@ const PaymentPage: React.FC = () => {
         // console.log("Selected bank changed:", selectedBank);
     }, [selectedBank]);
 
+    // UseEffect for setting the processsing Fee, hardcoded for now while not fixed in API
+    // useEffect(() => {
+    // // Lookup table for fees
+    // const processingFees: Record<string, Record<string, string>> = {
+    //     card: { default: "3.50" },
+    //     bank: {
+    //         "UnionBank of the Philippines"  : "10.00",
+    //         "Bank of the Philippine Islands": "15.00",
+    //     },
+    //     online: {
+    //         "Metrobank"                     : "5.00",
+    //         "Land Bank of the Philippines"  : "5.00",
+    //         "Sterling Bank of Asia"         : "5.00",
+    //         "UCPB Savings"                  : "5.00",
+    //         "Bank of the Philippine Islands": "5.00",
+    //         "UnionBank of the Philippines"  : "5.00",
+    //         "BDO Unibank Inc."              : "5.00",
+    //     },
+    //     otc: {
+    //         "Land Bank of the Philippines"  : "5.00",
+    //         "Bank of the Philippine Islands": "5.00",
+    //     },
+    //     wallet: {
+    //         "Shopee Pay": "2.50",
+    //         "Grab Pay": "2.50",
+    //     },
+    // };
+
+    // let fee = "0.00"; // default fallback
+
+    // if (method === "card") {
+    //     fee = processingFees.card.default;
+    // } else if (method === "bank" && selectedBank in processingFees.bank) {
+    //     fee = processingFees.bank[selectedBank];
+    // } else if (method === "online" && selectedOnlineBank in processingFees.online) {
+    //     fee = processingFees.online[selectedOnlineBank];
+    // } else if (method === "otc" && selectedOnlineOTC in processingFees.otc) {
+    //     fee = processingFees.otc[selectedOnlineOTC]
+    // } else if (method === "wallet" && selectedOnlineWallet in processingFees.wallet) {
+    //     fee = processingFees.wallet[selectedOnlineWallet]
+    // }
+
+    // _setProcessingFee(fee);
+
+    // }, [selectedBank, selectedOnlineBank, selectedOnlineOTC, selectedOnlineWallet, method]);
+
     return (
+    <>
+        {loadingMerchant && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 border-4 border-gray-300 border-t-[#312B5B] rounded-full animate-spin" />
+                    {/* <p className="text-sm font-semibold text-[#312B5B]">
+                        
+                    </p> */}
+                </div>
+            </div>
+        )}
+
         <div className="min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
         
         {/* Condensed Header */}
         <header className="flex flex-col items-center mb-4 pt-10">
             <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2" />
-            <h2 className="text-lg font-bold text-[#312B5B]">Business Name</h2>
+            <h2 className="text-lg font-bold text-[#312B5B]">{merchantName}</h2>
             <div className="flex gap-4 mt-1 text-[#312B5B]">
-            <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
+            {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
                             <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
-                            <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
+                            <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" /> */}
             </div>
         </header>
 
@@ -701,11 +836,7 @@ const PaymentPage: React.FC = () => {
 
                                             {item.label}
                                             </>
-                                        )}
-                                    
-                                    
-
-                                        
+                                        )}                 
                                 </span>
                             </button>
                             ))}
@@ -913,54 +1044,41 @@ const PaymentPage: React.FC = () => {
                         >
 
                         {availableOnlineBanks.map((bank) => {
-                        const isSelected = selectedOnlineBank === bank.name;
+                            const isSelected = selectedOnlineBank === bank.name;
 
-                        return (
-                            <div
-                            key={bank.name}
-                            className={`flex rounded-md text-xs transition-all duration-300 w-full lg:w-full mx-auto overflow-hidden ${
-                                isSelected
-                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
-                                : "border-transparent hover:bg-gray-50"
-                            }`}
-                            >
-                            <label className="flex items-center gap-4 p-2 cursor-pointer">
+                            return (
+                                <label
+                                key={bank.name}
+                                className={`flex items-center gap-4 p-2 rounded-md text-xs transition-all duration-300 w-full lg:w-full mx-auto cursor-pointer overflow-hidden ${
+                                    isSelected
+                                    ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                    : "border-transparent hover:bg-gray-50"
+                                }`}
+                                >
                                 <input
-                                type="radio"
-                                name="onlineMethod"
-                                checked={isSelected}
-                                onChange={() => setSelectedOnlineBank(bank.name)}
-                                className="w-4 h-4 accent-[#312B5B] shrink-0"
+                                    type="radio"
+                                    name="onlineMethod"
+                                    checked={isSelected}
+                                    onChange={() => setSelectedOnlineBank(bank.name)}
+                                    className="w-4 h-4 accent-[#312B5B] shrink-0"
                                 />
 
                                 <div className="w-9 h-9 rounded flex items-center justify-center shrink-0 overflow-hidden">
-                                <img
+                                    <img
                                     src={bank.main_logo_url}
                                     alt={bank.name}
                                     className="w-full h-full object-contain p-1"
-                                />
+                                    />
                                 </div>
 
                                 <div className="flex flex-col leading-tight">
-                                <span className="text-sm font-bold text-[#312B5B]">
-                                    {bank.name}
-                                </span>
-
-                                {/* <span className="text-[10px] text-[#312B5B]">
-                                    {bank.description}
-                                    {bank.fee && (
-                                    <span className="ml-2 text-[10px] text-[#312B5B]">
-                                    {bank.fee}
-                                    </span>
-                                    )}
-                                </span> */}
-
-                                
+                                    <span className="text-sm font-bold text-[#312B5B]">{bank.name}</span>
+                                    {/* Optional description */}
                                 </div>
-                            </label>
-                            </div>
-                        );
+                                </label>
+                            );
                         })}
+
                         </div>
                     </div>
                     )}
@@ -1008,7 +1126,7 @@ const PaymentPage: React.FC = () => {
                                 <img
                                     src={otc.main_logo_url}
                                     alt={otc.name}
-                                    className="w-10 h-10 object-contain p-1"
+                                    className="w-7 h-7 object-contain p-1"
                                 />
 
                                 <div className="flex flex-col leading-tight">
@@ -1064,7 +1182,7 @@ const PaymentPage: React.FC = () => {
                                 className="w-4 h-4 accent-[#312B5B] shrink-0"
                                 />
 
-                                <div className="w-10 h-10 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                                <div className="w-9 h-9 rounded flex items-center justify-center shrink-0 overflow-hidden">
                                     <img
                                         src={wallet.main_logo_url}
                                         alt={wallet.name}
@@ -1144,15 +1262,15 @@ const PaymentPage: React.FC = () => {
             </div>
             <div className="mt-0 md:mt-4 lg:mt-6 w-full flex justify-center items-center">
                 <button
-                    disabled={amount <= 99}
-                    className={`w-1/2 md:w-1/2 lg:w-1/3 py-2 rounded font-bold text-sm transition-all duration-300 shadow-md transform
-                    ${amount > 99
+                    disabled={amount <= 99 || paymentLoading}
+                    onClick={handlePaymentSuccess}
+                    className={`w-1/2 md:w-1/2 lg:w-1/3 py-2 rounded font-bold text-sm transition-all duration-300 shadow-md transform flex justify-center items-center
+                    ${amount > 99 && !paymentLoading
                         ? 'bg-linear-to-r from-[#2B3565] to-[#0171A3] text-white cursor-pointer hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
-                    onClick={handlePaymentSuccess}
                 >
-                    Pay Now
+                    {paymentLoading ? <Spinner /> : "Pay Now"}
                 </button>
             </div>
             {/* <div className="flex justify-center gap-2 mb-4">
@@ -1173,6 +1291,7 @@ const PaymentPage: React.FC = () => {
 
         </div>
         </div>
+        </>
     );
 };
 

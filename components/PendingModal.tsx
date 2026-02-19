@@ -1,21 +1,22 @@
 import React from 'react';
 import { 
-  Facebook, 
-  Instagram, 
-  Link2, 
+//   Facebook, 
+//   Instagram, 
+//   Link2, 
   MoreHorizontal 
 } from 'lucide-react';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const PendingModal: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { paymentSummary } = location.state || {};
+    const { merchant_username } = useParams();
 
     // Fallback if no state is passed
     if (!paymentSummary) return <p className="text-center mt-10">No payment details available.</p>;
 
-    const { totalAmount } = paymentSummary;
+    const { totalAmount, merchantName } = paymentSummary;
 
     const formattedDate = new Date().toLocaleString("en-US", {
         month: "long",
@@ -29,11 +30,11 @@ const PendingModal: React.FC = () => {
             {/* Header Section */}
             <div className="flex flex-col items-center mb-4">
                 <div className="w-20 h-20 bg-gray-300 rounded-full mb-2 shadow-inner" />
-                <h2 className="text-[#312B5B] text-lg font-bold">Business Name</h2>
+                <h2 className="text-[#312B5B] text-lg font-bold">{merchantName}</h2>
                 <div className="flex gap-2 mt-1 text-[#312B5B]">
-                    <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
+                    {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
                     <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
-                    <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
+                    <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" /> */}
                 </div>
             </div>
 
@@ -59,7 +60,7 @@ const PendingModal: React.FC = () => {
                             You have initiated a payment to
                         </p>
                         <p className="text-[#007AFF] font-medium text-xs md:text-sm cursor-pointer">
-                            Business Name
+                            {merchantName}
                         </p>
                         <h2 className="text-4xl font-bold text-black my-2">
                             ₱ {Number(totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -75,7 +76,7 @@ const PendingModal: React.FC = () => {
                     <div className="w-full flex justify-center">
                         <button 
                             className="w-full max-w-60 bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
-                            onClick={() => navigate("/")}
+                            onClick={() => navigate(`/${merchant_username}`)}
                         >
                             Make Another Payment
                         </button>
