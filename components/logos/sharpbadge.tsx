@@ -2,12 +2,12 @@ import React from 'react';
 
 interface SharpSuccessBadgeProps {
   className?: string;
+  pdfSafe?: boolean;
 }
 
-export const SharpSuccessBadge: React.FC<SharpSuccessBadgeProps> = ({ className }) => {
+export const SharpSuccessBadge: React.FC<SharpSuccessBadgeProps> = ({ className, pdfSafe }) => {
   return (
-    <div className={`relative flex items-center justify-center w-12 h-12 mb-6 drop-shadow-md ${className || ''}`}>
-      {/* 12-point star background */}
+    <div className={`relative flex items-center justify-center w-12 h-12 mb-6 ${!pdfSafe ? 'drop-shadow-md' : ''} ${className || ''}`}>
       <div 
         className="absolute w-10 h-10 bg-[#114E87]" 
         style={{
@@ -15,7 +15,6 @@ export const SharpSuccessBadge: React.FC<SharpSuccessBadgeProps> = ({ className 
         }}
       />
       
-      {/* Centered Checkmark */}
       <svg 
         viewBox="0 0 24 24" 
         fill="none" 
@@ -23,7 +22,7 @@ export const SharpSuccessBadge: React.FC<SharpSuccessBadgeProps> = ({ className 
         strokeWidth="3.5" 
         strokeLinecap="round" 
         strokeLinejoin="round" 
-        className="relative w-4 h-4 drop-shadow-sm"
+        className={`relative w-4 h-4 ${!pdfSafe ? 'drop-shadow-sm' : ''}`}
       >
         <polyline points="20 6 9 17 4 12" />
       </svg>

@@ -11,8 +11,9 @@ import {
   Smartphone
 } from 'lucide-react';
 
-import { useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams, useLocation} from "react-router-dom";
 // import generateReference from '../components/reference_generator/reference_generator';
+import Stepper from "../components/stepper/Stepper";
 
 // --- Types & Interfaces ---
 interface PaymentMethod {
@@ -218,18 +219,20 @@ const CARDS: CardOption[] = [
 // ];
 
 const PaymentPage: React.FC = () => {
-
+    const [currentStep, setCurrentStep] = useState(1);
     const navigate = useNavigate();
-    const [ amount, setAmount] = useState<number>(0);
-    const [ method, setMethod] = useState<string>('card');
+    const location = useLocation();
+    const { previousDetails } = location.state || {};
+    const [ amount, setAmount] = useState<number>(previousDetails?.amount ?? 0);
+    const [ method, setMethod] = useState<string>(previousDetails?.method ?? 'card');
     const [ selectedBank, setSelectedBank] = useState<string>('');
     const [ selectedCard, setSelectedCard] = useState<string>('credit-card');
-    const [ selectedOnlineBank, setSelectedOnlineBank] = useState<string>('');
+    const [ selectedOnlineBank, setSelectedOnlineBank] = useState<string>('Metrobank');
     const [ selectedOnlineOTC, setSelectedOnlineOTC] = useState<string>('');
     const [ selectedOnlineWallet, setSelectedOnlineWallet] = useState<string>('');
     const [ processingFee, _setProcessingFee] = useState<string | null>('');
     const { merchant_username } = useParams();
-
+    
     // const [ creditCardName, setCreditCardName] = useState("");
     // const [ creditCardNumber, setCreditCardNumber] = useState("");
     // const [ creditCardExpire, setCreditCardExpire] = useState("");
@@ -248,14 +251,14 @@ const PaymentPage: React.FC = () => {
     // const [prepaidCardExpire, setPrepaidCardExpire] = useState("");
     // const [prepaidCardCVV, setPrepaidCardCVV] = useState("");
 
-    const [summaryHeight, setSummaryHeight] = useState<number | undefined>(undefined);
+    const [_summaryHeight, setSummaryHeight] = useState<number | undefined>(undefined);
     
     // const PROCESSING_FEE = 10;
     const SYSTEM_FEE = amount >= 100 ? 10 : 0;
 
     const PROCESSING_FEE = Number(processingFee ?? 0);
 
-    const totalAmount = useMemo(() => amount + PROCESSING_FEE + SYSTEM_FEE, [amount, PROCESSING_FEE]);
+    const totalAmount = useMemo(() => amount + PROCESSING_FEE + SYSTEM_FEE, [amount, PROCESSING_FEE, SYSTEM_FEE]);
 
     const success_url         = import.meta.env.VITE_SUCCESS_REDIRECT_URL;
     const failed_url          = import.meta.env.VITE_FAILED_REDIRECT_URL;
@@ -323,7 +326,7 @@ const PaymentPage: React.FC = () => {
     const [ merchantName, setMerchantName] = useState ("");
     const [ loadingMerchant, setLoadingMerchant] = useState(false);
     const [ merchantError, setMerchantError] = useState<string | null>(null);
-
+    const safePaymentMethods = paymentmethods.map(({ icon, ...rest }) => rest);
     // UseEffect for fetching payment methods
     useEffect(() => {
         const controller = new AbortController();
@@ -388,6 +391,7 @@ const PaymentPage: React.FC = () => {
         return () => controller.abort();
     }, [username]);
 
+    
     // const sleep = (ms: number) =>
     //     new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -626,7 +630,6 @@ const PaymentPage: React.FC = () => {
                 };
 
             setPaymentResponse(data);
-
             switch (data.status) {
                 case "SUCCESS":
                     navigate(`/${merchant_username}/status/success`, { state: { paymentSummary } });
@@ -644,6 +647,8 @@ const PaymentPage: React.FC = () => {
                     console.warn("Unknown payment status:", data.status);
                     navigate("/status/failed", { state: { paymentSummary } });
             }
+            return data;
+
         }catch (error){
             console.error("Payment error:", error);
             // fallback navigation
@@ -760,19 +765,24 @@ const PaymentPage: React.FC = () => {
             </div>
         </header>
 
+        
+
         {/* Main Container */}
         <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden p-6 md:p-8 mb-10 md:mb-5">
+
+            {/* Stepper */}
+            <Stepper steps={["Amount", "Confirm"]} currentStep={currentStep} />
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-6">
+            <div className="grid grid-cols-1 md:gap-6">
             
                 {/* Form Controls */}
                 <div className="lg:col-span-2 space-y-5 md:space-x-8">
                     <div ref={formRef}>
                         <section className='mb-5'>
-                            <h2 className="text-center font-bold text-[#312B5B] md:text-start">Enter Amount</h2>
-                            <p className="text-xs text-center text-[#37416C] mb-2 md:text-start ">How much would you like to pay?</p>
+                            <h2 className="text-center font-bold text-[#312B5B] md:text-center">Enter Amount</h2>
+                            <p className="text-xs text-center text-[#37416C] mb-2 md:text-center ">How much would you like to pay?</p>
                             
-                            <div className="mb-2 flex justify-center md:justify-start">
+                            <div className="mb-2 flex justify-center md:justify-center">
                                 <div className="flex items-center w-[70%] md:w-1/2 border border-slate-300 rounded-lg px-2 py-1.5">
                                     <span className="font-bold text-[#312B5B] mr-1">₱</span>
                                     <input
@@ -803,8 +813,8 @@ const PaymentPage: React.FC = () => {
                         </section>
 
                         <section >
-                        <h2 className="text-center md:text-start font-bold text-[#312B5B]">Payment Method</h2>
-                        <p className="text-xs text-center md:text-start text-[#37416C] mb-2">Select how you want to pay</p>
+                        <h2 className="text-center md:text-center font-bold text-[#312B5B]">Payment Method</h2>
+                        <p className="text-xs text-center md:text-center text-[#37416C] mb-2">Select how you want to pay</p>
                         
                         <div className="md:grid md:grid-cols-3 grid grid-cols-2 gap-2 mb-3">
                             {paymentmethods.map((item) => (
@@ -1211,8 +1221,8 @@ const PaymentPage: React.FC = () => {
                 </div>
 
                 {/* Summary Card */}    
-                <div className="lg:col-span-1 flex justify-center mb-0 md:mb-4 mt-20 md:mt-0" style={{ height: summaryHeight }}>
-                    <div className="w-full max-w-sm" style={{ height: summaryHeight }}>
+                {/* <div className="lg:col-span-1 flex justify-center mb-0 md:mb-4 mt-20 md:mt-0" style={{ height: _summaryHeight }}>
+                    <div className="w-full max-w-sm" style={{ height: _summaryHeight }}>
                     <div className="bg-[#F4F6F8] rounded-tr-xl rounded-tl-xl p-4 border border-gray-100 flex flex-col shadow-md"
                         
                     >
@@ -1257,19 +1267,55 @@ const PaymentPage: React.FC = () => {
                         <p className="text-[11px] text-[#312B5B] text-center md:whitespace-nowrap">Make sure the browser bar displays <span className='text-[#312B5B] font-bold'>PulseTech</span></p>
                     </div>
                     </div>
-                </div>
+                </div> */}
             
             </div>
+
             <div className="mt-0 md:mt-4 lg:mt-6 w-full flex justify-center items-center">
                 <button
                     disabled={amount <= 99 || paymentLoading}
-                    onClick={handlePaymentSuccess}
-                    className={`w-1/2 md:w-1/2 lg:w-1/3 py-2 rounded font-bold text-sm transition-all duration-300 shadow-md transform flex justify-center items-center
+                    // onClick={handlePaymentSuccess}
+                    onClick={ async () => {
+
+                        const response = await handlePaymentSuccess();
+
+                        if (!response) return; // exit if failed
+
+                        setCurrentStep(2);
+
+                        const paymentDetails = {
+                            amount: Number(amount),
+                            method,
+                            methodLabel: selectedMethodLabel,
+                            methodId: selectedMethodId,
+                            selectedBank,
+                            selectedCard,
+                            selectedOnlineBank,
+                            selectedOnlineOTC,
+                            selectedOnlineWallet,
+                            totalAmount: Number(totalAmount),
+                            merchantName,
+                            methodCode: methodCodePayload,
+                            safePaymentMethods,
+                            providerCode: providerCodePayload,
+                            processingFee: Number(PROCESSING_FEE),
+                            systemFee: Number(SYSTEM_FEE),
+                            success_url,
+                            failed_url,
+                            paymentResponse: response,
+                            availableBanks,
+                            availableOnlineBanks,
+                            availableOTCBanks,
+                            availableWalletBanks,
+                        };
+                        navigate(`/${merchant_username}/confirm`, { state: { paymentDetails } });
+                    }}
+                            className={`w-1/2 md:w-1/2 lg:w-1/3 py-2 rounded font-bold text-sm transition-all duration-300 shadow-md transform flex justify-center items-center
                     ${amount > 99 && !paymentLoading
                         ? 'bg-linear-to-r from-[#2B3565] to-[#0171A3] text-white cursor-pointer hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
-                >
+                        >
                     {paymentLoading ? <Spinner /> : "Pay Now"}
                 </button>
             </div>
