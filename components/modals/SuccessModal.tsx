@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from "react-router-dom";
 import { 
 // Facebook, 
 // Instagram, 
@@ -6,30 +7,92 @@ import {
 Printer
 } from 'lucide-react';
 
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SharpSuccessBadge from '../logos/sharpbadge';
 
 import { toPng } from 'html-to-image';
 import { saveAs } from 'file-saver';
 
+type redirectResponse = {
+    transaction_id: string,
+    currency: string,
+    created_at: string,
+    status: string,
+    updated_at: string,
+    reference_id: string,
+    type: string,
+    error: string | null,
+    webhook_url: string | null,
+    amount: number,
+    fees: {
+        system_fee: string,
+        processing_fee: string,
+    },
+    paid_at: string | null,
+    payment_method: {
+        method_code: string | null,
+        provider_code: string | null
+    }
+}
 const SuccessModal: React.FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const { merchant_username } = useParams();
-    
-    const { paymentSummary } = location.state || {};
 
+    const api_base_url = import.meta.env.VITE_API_BASE_URL
+
+    const navigate = useNavigate();
+    const { merchant_username }                = useParams();
+    const [searchParams]                       = useSearchParams();
+    const reference_id                         = searchParams.get("reference_id");
+    const [ _loading, setLoading ]             = useState(false);
+    const [ _error, setError ]                 = useState<string | null>(null);
+    const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
+    
     const receiptRef = useRef<HTMLDivElement>(null);
 
-    // const { totalAmount, method, _subTotal, _processingFee, _systemFee } = paymentSummary;
-    const { totalAmount, method, referenceNo, dateTime, merchantName} = paymentSummary;
+    useEffect(() => {
 
-    const paymentDetails = {
-        amount: totalAmount,
-        referenceNo: referenceNo,
-        dateTime:dateTime,
-        method: method
-    };
+        if (!merchant_username || !reference_id) return;
+
+        const fetchPaymentStatus = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const response = await fetch(
+                    `${api_base_url}/payment-page/${merchant_username}/payment/${reference_id}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to verify payment");
+                }
+
+                const data = await response.json();
+                setPaymentSummary(data);
+                console.log("Verification response:", data);
+
+            } catch (err: unknown) {
+                console.error(err);
+
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("Something went wrong");
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+            fetchPaymentStatus();
+    }, [merchant_username, reference_id]);
+
+    if (!paymentSummary) return <p>No payment details available.</p>
+
+    const totalAmount = (paymentSummary.amount ?? 0) + Number(paymentSummary.fees?.processing_fee ?? 0) + Number(paymentSummary.fees?.system_fee ?? 0)
 
     const handleDownload = async () => {
         if (!receiptRef.current) return;
@@ -43,14 +106,15 @@ const SuccessModal: React.FC = () => {
             });
 
             // Trigger automatic download
-            saveAs(dataUrl, `Receipt-${paymentDetails.referenceNo}.png`);
+            saveAs(dataUrl, `Receipt-${paymentSummary?.reference_id}.png`);
         } catch (err) {
             console.error('Failed to download receipt', err);
             alert('Could not generate receipt. Please try again.');
         }
     };
 
-    if (!paymentSummary) return <p>No payment details available.</p>;
+    
+
 
     // console.log(paymentSummary.methodId)
     return (
@@ -59,7 +123,7 @@ const SuccessModal: React.FC = () => {
         {/* Header Section */}
         <header className="flex flex-col items-center mb-4 pt-10">
             <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2" />
-            <h2 className="text-[#312B5B] text-lg font-bold">{merchantName}</h2>
+            <h2 className="text-[#312B5B] text-lg font-bold">Merchant Name Placeholder</h2>
             <div className="flex gap-2 mt-1 text-[#312B5B]">
             {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
             <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
@@ -93,21 +157,21 @@ const SuccessModal: React.FC = () => {
                         
                         <div className="flex justify-between text-[#312B5B] md:text-base">
                             <span>Sub Total</span>
-                            <span className="font-medium">{(paymentSummary.subTotal).toFixed(2)}</span>
+                            <span className="font-medium">{(paymentSummary.amount).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-[#312B5B] md:text-base ">
                             <span>Processing Fee</span>
-                            <span className="font-medium">₱{Number(paymentSummary.processingFee).toFixed(2)}</span>
+                            <span className="font-medium">₱{Number(paymentSummary.fees.processing_fee).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-[#312B5B] md:text-base ">
                             <span>System Fee</span>
-                            <span className="font-medium">₱{Number(paymentSummary.systemFee).toFixed(2)}</span>
+                            <span className="font-medium">₱{Number(paymentSummary.fees.system_fee).toFixed(2)}</span>
                         </div>
                     </div>
 
                     <div className="flex justify-between items-center p-3 border-t border-dashed border-[#6F7282] pt-2 mx-3">
                         <span className="text-[#312B5B] text-lg font-bold">Amount Paid</span>
-                        <span className="text-[#312B5B] font-bold text-xl">₱ {Number(paymentDetails.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        <span className="text-[#312B5B] font-bold text-xl">₱ {Number(totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 
                     <div className=" border-[#6F7282] border-t border-dashed pt-2 mb-3 mx-3"/>
@@ -115,15 +179,15 @@ const SuccessModal: React.FC = () => {
                     <div className="space-y-2 sm p-3 px-3 md:text-base">
                         <div className="flex justify-between">
                         <span className="text-[#312B5B]">Reference No.</span>
-                        <span className="text-[#312B5B] font-medium break-all ml-2">{paymentDetails.referenceNo}</span>
+                        <span className="text-[#312B5B] font-medium break-all ml-2">{paymentSummary.reference_id}</span>
                         </div>
                         <div className="flex justify-between">
                         <span className="text-[#312B5B]">Date & Time</span>
-                        <span className="text-[#312B5B] font-medium ml-2">Created at {paymentDetails.dateTime}</span>
+                        <span className="text-[#312B5B] font-medium ml-2">Created at {paymentSummary.created_at}</span>
                         </div>
                         <div className="flex justify-between">
                         <span className="text-[#312B5B]">Payment Method</span>
-                        <span className="text-[#312B5B] font-medium ml-2">{paymentDetails.method}</span>
+                        <span className="text-[#312B5B] font-medium ml-2">Payment Method Placeholder</span>
                         </div>
                     </div>  
                 </div>
