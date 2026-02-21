@@ -91,7 +91,46 @@ const SuccessModal: React.FC = () => {
                 setLoading(false);
             }
         };
+
+        const fetchMerchantName = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const response = await fetch(
+                    `${api_base_url}/payment-page/${merchant_username}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                        // body: JSON.stringify({})
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch merchant name");
+                }
+
+                const data = await response.json();
+                // set(data);
+                console.log("Merchant name response:", data);
+
+            } catch (err: unknown) {
+                console.error(err);
+
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("Something went wrong");
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
             fetchPaymentStatus();
+            fetchMerchantName();
     }, [merchant_username, reference_id]);
 
     if (!paymentSummary) return <p>No payment details available.</p>
@@ -129,7 +168,7 @@ const SuccessModal: React.FC = () => {
         {/* Header Section */}
         <header className="flex flex-col items-center mb-4 pt-10">
             <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2" />
-            <h2 className="text-[#312B5B] text-lg font-bold">Merchant Name Placeholder</h2>
+            <h2 className="text-[#312B5B] text-lg font-bold">{merchant_username}</h2>
             <div className="flex gap-2 mt-1 text-[#312B5B]">
             {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
             <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
