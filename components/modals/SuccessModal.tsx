@@ -58,6 +58,7 @@ const SuccessModal: React.FC = () => {
         const fetchData = async () => {
             try {
             setLoading(true);
+            await new Promise(r => setTimeout(r, 500));
             setError(null);
 
             const [paymentRes, merchantRes] = await Promise.all([
@@ -99,13 +100,13 @@ const SuccessModal: React.FC = () => {
 
 
     const Spinner = () => (
-        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-blue-300 rounded-full animate-spin" />
+        <span className="inline-block w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
     );
 
     //Loading state
     if (_loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6]">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6]">
                 <Spinner />
             </div>
         );
@@ -114,7 +115,7 @@ const SuccessModal: React.FC = () => {
     // Error State
     if (_error) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] text-center px-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] text-center px-4">
                 <p className="text-red-600 font-semibold mb-2">Something went wrong</p>
                 <p className="text-[#312B5B] text-sm">{_error}</p>
             </div>
@@ -152,7 +153,7 @@ const SuccessModal: React.FC = () => {
 
     // console.log(paymentSummary.methodId)
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
         
         {/* Header Section */}
         <header className="flex flex-col items-center mb-4 pt-10">
