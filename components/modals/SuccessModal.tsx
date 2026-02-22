@@ -229,10 +229,17 @@ const SuccessModal: React.FC = () => {
                         </div>
                         <div className="flex items-start">
                         <span className="text-[#312B5B] w-32 flex-shrink-0">
-                            Date & Time
+                            Created at
                         </span>
                         <span className="text-[#312B5B] font-medium ml-2 break-all">
-                            Created at {paymentSummary.created_at}
+                            {new Date(paymentSummary.created_at).toLocaleString(undefined, {
+                            year: "numeric",
+                            month: "short",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                            })}
                         </span>
                         </div>
                         <div className="flex justify-between">
