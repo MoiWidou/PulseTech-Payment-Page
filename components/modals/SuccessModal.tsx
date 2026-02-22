@@ -227,7 +227,7 @@ const SuccessModal: React.FC = () => {
                         <span className="text-[#312B5B]">Reference No.</span>
                         <span className="text-[#312B5B] font-medium break-all ml-2">{paymentSummary.reference_id}</span>
                         </div>
-                        <div className="flex items-start">
+                        <div className="flex justify-between">
                         <span className="text-[#312B5B] w-32 flex-shrink-0">
                             Created at
                         </span>
