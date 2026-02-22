@@ -91,7 +91,14 @@ const SuccessModal: React.FC = () => {
                 }),
                 fetch(
                     `${api_base_url}/payment-page/payment/methods?username=${merchant_username}`,
-                    { method: "GET", headers: { "Content-Type": "application/json" } }
+                    { 
+                        method: "GET",
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "username"    : merchant_username
+                        } 
+                        
+                }
                 ),
             ]);
 
