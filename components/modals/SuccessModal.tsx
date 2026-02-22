@@ -34,6 +34,22 @@ type redirectResponse = {
         provider_code: string | null
     }
 }
+
+type PaymentMethodItem = {
+    provider_code: string;
+    name: string;
+    short_name: string;
+    main_logo_url: string;
+    status: string;
+    country_code: string;
+    fee_value: string | null;
+    fee_type: string | null;
+    method_code: string;
+    category: string;
+}
+
+type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
+
 const SuccessModal: React.FC = () => {
     
     const api_base_url = import.meta.env.VITE_API_BASE_URL
@@ -47,6 +63,7 @@ const SuccessModal: React.FC = () => {
     const [ _error, setError ]                 = useState<string | null>(null);
     const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
     const [ merchantName, setMerchantName ]    = useState ("");
+    const [ paymentMethod, setPaymentMethod ]  = useState ("");
 
     // const { paymentSummary } = location.state || {};
     
@@ -58,10 +75,9 @@ const SuccessModal: React.FC = () => {
         const fetchData = async () => {
             try {
             setLoading(true);
-            await new Promise(r => setTimeout(r, 2000));
             setError(null);
 
-            const [paymentRes, merchantRes] = await Promise.all([
+            const [paymentRes, merchantRes, methodRes] = await Promise.all([
                 fetch(
                 `${api_base_url}/payment-page/${merchant_username}/payment?transaction_id=${encodeURIComponent(reference_id)}`,
                 {
@@ -73,17 +89,47 @@ const SuccessModal: React.FC = () => {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 }),
+                fetch(
+                    `${api_base_url}/payment-page/payment/methods?username=${merchant_username}`,
+                    { method: "GET", headers: { "Content-Type": "application/json" } }
+                ),
             ]);
 
             if (!paymentRes.ok) throw new Error("Failed to verify payment");
             if (!merchantRes.ok) throw new Error("Failed to fetch merchant");
+            if (!methodRes.ok) throw new Error("Failed to fetch payment method");
 
-            const paymentData = await paymentRes.json();
+            const paymentData  = await paymentRes.json();
             const merchantData = await merchantRes.json();
+            const methodData   = await methodRes.json();
+              
+            const paymentMethodData = paymentData.payment_method;
 
+            let matchedName = "";
+
+            // Loop through all categories in methodData
+            for (const categoryKey in methodData) {
+                const providersArray = methodData[categoryKey];
+                // Find the provider that matches both method_code and provider_code
+                const match = providersArray.find(
+                    (item: PaymentMethodsResponse) =>
+                        item.method_code === paymentMethodData.method_code &&
+                        item.provider_code === paymentMethodData.provider_code
+                );
+                if (match) {
+                    matchedName = match.name;
+                    break; // stop once we found it
+                }
+            }
+
+            // Then set it in state
+            
             setPaymentSummary(paymentData);
             setMerchantName(merchantData.merchant_name);
+            setPaymentMethod(matchedName);
 
+            console.log("matched name: ", matchedName)
+            // setPaymentMethod(methodData.)
             } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -233,7 +279,7 @@ const SuccessModal: React.FC = () => {
                         </div>
                         <div className="flex justify-between">
                         <span className="text-[#312B5B]">Payment Method</span>
-                        <span className="text-[#312B5B] font-medium ml-2 whitespace-nowrap flex-shrink-0">Payment Method Placeholder</span>
+                        <span className="text-[#312B5B] font-medium ml-2 whitespace-nowrap flex-shrink-0">{paymentMethod}</span>
                         </div>
                     </div>  
             </div>
