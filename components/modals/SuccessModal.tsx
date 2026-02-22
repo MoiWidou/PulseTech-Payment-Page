@@ -233,10 +233,10 @@ const SuccessModal: React.FC = () => {
                         </div>
                         <div className="flex justify-between">
                         <span className="text-[#312B5B]">Payment Method</span>
-                        <span className="text-[#312B5B] font-medium ml-2">Payment Method Placeholder</span>
+                        <span className="text-[#312B5B] font-medium ml-2 whitespace-nowrap flex-shrink-0">Payment Method Placeholder</span>
                         </div>
                     </div>  
-                </div>
+            </div>
 
 
             {/* Security Footer */}
