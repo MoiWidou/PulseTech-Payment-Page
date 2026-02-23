@@ -53,6 +53,7 @@ type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
 const SuccessModal: React.FC = () => {
     
     const api_base_url = import.meta.env.VITE_API_BASE_URL
+    const base_url     = import.meta.env.VITE_BASE_URL
 
     const navigate = useNavigate();
       // const location                             = useLocation();
@@ -109,7 +110,12 @@ const SuccessModal: React.FC = () => {
             const paymentData  = await paymentRes.json();
             const merchantData = await merchantRes.json();
             const methodData   = await methodRes.json();
-              
+            
+            // Payment Status Redirect if Failed
+            if (paymentData.status === "FAILED"){
+                navigate(`${base_url}/status/failed?reference_id=${reference_id}`)
+            }            
+            
             const paymentMethodData = paymentData.payment_method;
 
             let matchedName = "";
