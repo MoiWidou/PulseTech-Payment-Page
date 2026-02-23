@@ -261,8 +261,8 @@ const PaymentPage: React.FC = () => {
     const totalAmount = useMemo(() => amount + PROCESSING_FEE + SYSTEM_FEE, [amount, PROCESSING_FEE, SYSTEM_FEE]);
 
     const base_url            = import.meta.env.VITE_BASE_URL;
-    const success_url         = `${base_url}/${merchant_username}/status/success`;
-    const failed_url          = `${base_url}/${merchant_username}/status/failed`;
+    const success_url         = `${base_url}/${merchant_username}/status`;
+    const failed_url          = `${base_url}/${merchant_username}/status`;
     const api_base_url        = import.meta.env.VITE_API_BASE_URL;
     const username            = import.meta.env.VITE_USERNAME;
     const payment_methods_url = import.meta.env.VITE_PAYMENT_METHODS_URL;
