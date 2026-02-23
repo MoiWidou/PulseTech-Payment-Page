@@ -204,7 +204,7 @@ const SuccessModal: React.FC = () => {
 
     // console.log(paymentSummary.methodId)
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans mb-5">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans mb-7">
         
         {/* Header Section */}
         <header className="flex flex-col items-center mb-4 pt-10">
