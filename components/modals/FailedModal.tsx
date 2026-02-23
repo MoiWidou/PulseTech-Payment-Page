@@ -7,21 +7,27 @@ import {
 } from 'lucide-react';
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-
-type PaymentMethodItem = {
-    provider_code: string;
-    name: string;
-    short_name: string;
-    main_logo_url: string;
-    status: string;
-    country_code: string;
-    fee_value: string | null;
-    fee_type: string | null;
-    method_code: string;
-    category: string;
+type redirectResponse = {
+    transaction_id: string,
+    currency: string,
+    created_at: string,
+    status: string,
+    updated_at: string,
+    reference_id: string,
+    type: string,
+    error: string | null,
+    webhook_url: string | null,
+    amount: number,
+    fees: {
+        system_fee: string,
+        processing_fee: string,
+    },
+    paid_at: string | null,
+    payment_method: {
+        method_code: string | null,
+        provider_code: string | null
+    }
 }
-
-type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
 
 const FailedModal: React.FC = () => {
     const api_base_url = import.meta.env.VITE_API_BASE_URL
@@ -45,7 +51,7 @@ const FailedModal: React.FC = () => {
                     setLoading(true);
                     setError(null);
         
-                    const [paymentRes, merchantRes, methodRes] = await Promise.all([
+                    const [paymentRes, merchantRes] = await Promise.all([
                         fetch(
                         `${api_base_url}/payment-page/${merchant_username}/payment?transaction_id=${encodeURIComponent(reference_id)}`,
                         {
@@ -57,17 +63,6 @@ const FailedModal: React.FC = () => {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
                         }),
-                        fetch(
-                            `${api_base_url}/payment-page/payment/methods?username=${merchant_username}`,
-                            { 
-                                method: "GET",
-                                headers: { 
-                                    "Content-Type": "application/json",
-                                    "username"    : merchant_username
-                                } 
-                                
-                        }
-                        ),
                     ]);
         
                     if (!paymentRes.ok) throw new Error("Failed to verify payment");
