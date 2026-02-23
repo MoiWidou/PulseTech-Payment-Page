@@ -53,7 +53,6 @@ type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
 const SuccessModal: React.FC = () => {
     
     const api_base_url = import.meta.env.VITE_API_BASE_URL
-    const base_url     = import.meta.env.VITE_BASE_URL
 
     const navigate = useNavigate();
       // const location                             = useLocation();
