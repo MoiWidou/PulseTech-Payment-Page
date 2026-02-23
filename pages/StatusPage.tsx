@@ -2,7 +2,7 @@ import { useSearchParams, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SuccessModal from "../components/modals/SuccessModal";
 import FailedModal from "../components/modals/FailedModal";
-import PendingModal from "../components/modals/PendingModal";
+// import PendingModal from "../components/modals/PendingModal";
 
 type redirectResponse = {
     transaction_id: string,
