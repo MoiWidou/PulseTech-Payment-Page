@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from "react-router-dom";
+import React, { useRef } from 'react';
+// import { useSearchParams } from "react-router-dom";
 import { 
 // Facebook, 
 // Instagram, 
@@ -35,152 +35,36 @@ type redirectResponse = {
     }
 }
 
-type PaymentMethodItem = {
-    provider_code: string;
-    name: string;
-    short_name: string;
-    main_logo_url: string;
-    status: string;
-    country_code: string;
-    fee_value: string | null;
-    fee_type: string | null;
-    method_code: string;
-    category: string;
-}
+// type PaymentMethodItem = {
+//     provider_code: string;
+//     name: string;
+//     short_name: string;
+//     main_logo_url: string;
+//     status: string;
+//     country_code: string;
+//     fee_value: string | null;
+//     fee_type: string | null;
+//     method_code: string;
+//     category: string;
+// }
 
-type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
+// type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
 
-const SuccessModal: React.FC = () => {
+type ModalProps = {
+  paymentSummary: redirectResponse | null;
+  merchantName: string;
+  paymentMethod: string;
+};
+
+const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymentMethod}) => {
     
-    const api_base_url = import.meta.env.VITE_API_BASE_URL
-
-    const navigate = useNavigate();
-      // const location                             = useLocation();
-    const { merchant_username }                = useParams();
-    const [searchParams]                       = useSearchParams();
-    const reference_id                         = searchParams.get("reference_id");
-    const [ _loading, setLoading ]             = useState(false);
-    const [ _error, setError ]                 = useState<string | null>(null);
-    const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
-    const [ merchantName, setMerchantName ]    = useState ("");
-    const [ paymentMethod, setPaymentMethod ]  = useState ("");
-
+    const navigate              = useNavigate();
+    const { merchant_username } = useParams();
+    
+    // const location                             = useLocation();
     // const { paymentSummary } = location.state || {};
     
     const receiptRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!merchant_username || !reference_id) return;
-
-        const fetchData = async () => {
-            try {
-            setLoading(true);
-            setError(null);
-
-            const [paymentRes, merchantRes, methodRes] = await Promise.all([
-                fetch(
-                `${api_base_url}/payment-page/${merchant_username}/payment?transaction_id=${encodeURIComponent(reference_id)}`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                }
-                ),
-                fetch(`${api_base_url}/payment-page/${merchant_username}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-                }),
-                fetch(
-                    `${api_base_url}/payment-page/payment/methods?username=${merchant_username}`,
-                    { 
-                        method: "GET",
-                        headers: { 
-                            "Content-Type": "application/json",
-                            "username"    : merchant_username
-                        } 
-                        
-                }
-                ),
-            ]);
-
-            if (!paymentRes.ok) throw new Error("Failed to verify payment");
-            if (!merchantRes.ok) throw new Error("Failed to fetch merchant");
-            if (!methodRes.ok) throw new Error("Failed to fetch payment method");
-
-            const paymentData  = await paymentRes.json();
-            const merchantData = await merchantRes.json();
-            const methodData   = await methodRes.json();
-            
-            // Payment Status Redirect if Failed
-            if (paymentData.status === "FAILED"){
-                navigate(`?reference_id=${reference_id}`, {
-                        state: { paymentSummary: paymentData },
-                        replace: true
-                    });
-                    return; 
-            }            
-
-            const paymentMethodData = paymentData.payment_method;
-
-            let matchedName = "";
-
-            // Loop through all categories in methodData
-            for (const categoryKey in methodData) {
-                const providersArray = methodData[categoryKey];
-                // Find the provider that matches both method_code and provider_code
-                const match = providersArray.find(
-                    (item: PaymentMethodsResponse) =>
-                        item.method_code === paymentMethodData.method_code &&
-                        item.provider_code === paymentMethodData.provider_code
-                );
-                if (match) {
-                    matchedName = match.name;
-                    break; // stop once we found it
-                }
-            }
-
-            // Then set it in state
-            
-            setPaymentSummary(paymentData);
-            setMerchantName(merchantData.merchant_name);
-            setPaymentMethod(matchedName);
-
-            } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError("Something went wrong");
-            }
-            } finally {
-            setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [merchant_username, reference_id]);
-
-
-    const Spinner = () => (
-        <span className="inline-block w-16 h-16 border-4 border-gray-300 border-t-[#312B5B] rounded-full animate-spin" />
-    );
-
-    //Loading state
-    if (_loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6]">
-                <Spinner />
-            </div>
-        );
-    }
-
-    // Error State
-    if (_error) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] text-center px-4">
-                <p className="text-red-600 font-semibold mb-2">Something went wrong</p>
-                <p className="text-[#312B5B] text-sm">{_error}</p>
-            </div>
-        );
-    }
 
     // Safety fallback (if somehow no loading, no error, but no data)
     if (!paymentSummary) return null;
@@ -207,9 +91,6 @@ const SuccessModal: React.FC = () => {
             alert('Could not generate receipt. Please try again.');
         }
     };
-
-    
-
 
     // console.log(paymentSummary.methodId)
     return (

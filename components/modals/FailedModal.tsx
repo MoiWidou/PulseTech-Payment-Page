@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { 
 //   Facebook, 
 //   Instagram, 
 //   Link2, 
   XCircle 
 } from 'lucide-react';
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type redirectResponse = {
     transaction_id: string,
@@ -29,91 +29,26 @@ type redirectResponse = {
     }
 }
 
-const FailedModal: React.FC = () => {
-    const api_base_url = import.meta.env.VITE_API_BASE_URL
+type ModalProps = {
+  paymentSummary: redirectResponse | null;
+  merchantName: string;
+};
+
+const FailedModal: React.FC <ModalProps> = ({paymentSummary, merchantName}) => {
+    // const api_base_url = import.meta.env.VITE_API_BASE_URL
     const navigate = useNavigate();
     // const location = useLocation();
     // const { paymentSummary } = location.state || {};
-    const [ _loading, setLoading ] = useState(false);
-    const [ _error, setError ]     = useState<string | null>(null);
-    const [searchParams]= useSearchParams();
-    const reference_id  = searchParams.get("reference_id");
-    const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
-    const [ merchantName, setMerchantName ]    = useState ("");
+    // const [ _loading, setLoading ] = useState(false);
+    // const [ _error, setError ]     = useState<string | null>(null);
+    // const [searchParams]= useSearchParams();
+    // const reference_id  = searchParams.get("reference_id");
+    // const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
+    // const [ merchantName, setMerchantName ]    = useState ("");
     
     const { merchant_username } = useParams();
-
-        useEffect(() => {
-                if (!merchant_username || !reference_id) return;
-        
-                const fetchData = async () => {
-                    try {
-                    setLoading(true);
-                    setError(null);
-        
-                    const [paymentRes, merchantRes] = await Promise.all([
-                        fetch(
-                        `${api_base_url}/payment-page/${merchant_username}/payment?transaction_id=${encodeURIComponent(reference_id)}`,
-                        {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                        }
-                        ),
-                        fetch(`${api_base_url}/payment-page/${merchant_username}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                        }),
-                    ]);
-        
-                    if (!paymentRes.ok) throw new Error("Failed to verify payment");
-                    if (!merchantRes.ok) throw new Error("Failed to fetch merchant");
-        
-                    const paymentData  = await paymentRes.json();
-                    const merchantData = await merchantRes.json();
-        
-                    // Then set it in state
-                    
-                    setPaymentSummary(paymentData);
-                    setMerchantName(merchantData.merchant_name);
-        
-                    } catch (err) {
-                    if (err instanceof Error) {
-                        setError(err.message);
-                    } else {
-                        setError("Something went wrong");
-                    }
-                    } finally {
-                    setLoading(false);
-                    }
-                };
-        
-                fetchData();
-            }, [merchant_username, reference_id]);
     
     const totalAmount = (Number(paymentSummary?.amount)) + (Number(paymentSummary?.fees?.processing_fee)) + (Number(paymentSummary?.fees?.system_fee))
-
-    const Spinner = () => (
-        <span className="inline-block w-16 h-16 border-4 border-gray-300 border-t-[#312B5B] rounded-full animate-spin" />
-    );
-
-    //Loading state
-    if (_loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6]">
-                <Spinner />
-            </div>
-        );
-    }
-
-    // Error State
-    if (_error) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] text-center px-4">
-                <p className="text-red-600 font-semibold mb-2">Something went wrong</p>
-                <p className="text-[#312B5B] text-sm">{_error}</p>
-            </div>
-        );
-    }
 
     if (!paymentSummary) return <p className="text-center mt-10 text-[#312B5B]">No payment details available.</p>;
 

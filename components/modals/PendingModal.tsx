@@ -5,24 +5,123 @@ import {
 //   Link2, 
   MoreHorizontal 
 } from 'lucide-react';
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+// import SuccessModal from './SuccessModal';
+// import FailedModal from './FailedModal';
 
-const PendingModal: React.FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const { paymentSummary } = location.state || {};
-    const { merchant_username } = useParams();
+type redirectResponse = {
+    transaction_id: string,
+    currency: string,
+    created_at: string,
+    status: string,
+    updated_at: string,
+    reference_id: string,
+    type: string,
+    error: string | null,
+    webhook_url: string | null,
+    amount: number,
+    fees: {
+        system_fee: string,
+        processing_fee: string,
+    },
+    paid_at: string | null,
+    payment_method: {
+        method_code: string | null,
+        provider_code: string | null
+    }
+}
 
-    // Fallback if no state is passed
-    if (!paymentSummary) return <p className="text-center mt-10">No payment details available.</p>;
+type ModalProps = {
+  paymentSummary: redirectResponse | null;
+  merchantName: string;
+};
 
-    const { totalAmount, merchantName } = paymentSummary;
+const PendingModal: React.FC <ModalProps> = ({paymentSummary, merchantName }) => {
+    // const api_base_url             = import.meta.env.VITE_API_BASE_URL
+    const navigate                 = useNavigate();
+    // const [searchParams]           = useSearchParams();
+    // const reference_id             = searchParams.get("reference_id");
+    const { merchant_username }    = useParams();
+    // const [ _loading, setLoading ] = useState(false);
+    // const [ _error, setError ]     = useState<string | null>(null);
+    // const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
+    // const [ merchantName, setMerchantName ]    = useState ("");
 
     const formattedDate = new Date().toLocaleString("en-US", {
         month: "long",
         day: "numeric",
         year: "numeric"
     });
+
+    // useEffect(() => {
+    //         if (!merchant_username || !reference_id) return;
+
+    //         const fetchData = async () => {
+    //             try {
+    //             setLoading(true);
+    //             setError(null);
+
+    //             const [paymentRes, merchantRes, methodRes] = await Promise.all([
+    //                 fetch(
+    //                 `${api_base_url}/payment-page/${merchant_username}/payment?transaction_id=${encodeURIComponent(reference_id)}`,
+    //                 {
+    //                     method: "POST",
+    //                     headers: { "Content-Type": "application/json" },
+    //                 }
+    //                 ),
+    //                 fetch(`${api_base_url}/payment-page/${merchant_username}`, {
+    //                 method: "GET",
+    //                 headers: { "Content-Type": "application/json" },
+    //                 }),
+    //                 fetch(
+    //                     `${api_base_url}/payment-page/payment/methods?username=${merchant_username}`,
+    //                     { 
+    //                         method: "GET",
+    //                         headers: { 
+    //                             "Content-Type": "application/json",
+    //                             "username"    : merchant_username
+    //                         } 
+                            
+    //                 }
+    //                 ),
+    //             ]);
+
+    //             if (!paymentRes.ok) throw new Error("Failed to verify payment");
+    //             if (!merchantRes.ok) throw new Error("Failed to fetch merchant");
+    //             if (!methodRes.ok) throw new Error("Failed to fetch payment method");
+
+    //             const paymentData  = await paymentRes.json();
+    //             const merchantData = await merchantRes.json();
+
+    //             // Payment Status Redirections
+    //             if (paymentData.status === "SUCCESS") return <SuccessModal />;
+    //             if (paymentData.status === "FAILED") return <FailedModal />;
+    //             if (paymentData.status === "PENDING") return <PendingModal />;      
+
+
+    //             // Then set it in state
+    //             setPaymentSummary(paymentData);
+    //             setMerchantName(merchantData.merchant_name);
+
+    //             } catch (err) {
+    //             if (err instanceof Error) {
+    //                 setError(err.message);
+    //             } else {
+    //                 setError("Something went wrong");
+    //             }
+    //             } finally {
+    //             setLoading(false);
+    //             }
+    //         };
+
+    //         fetchData();
+    // }, [merchant_username, reference_id]);
+    
+    const totalAmount = (Number(paymentSummary?.amount)) + (Number(paymentSummary?.fees?.processing_fee)) + (Number(paymentSummary?.fees?.system_fee))
+
+    // Fallback if no state is passed
+    if (!paymentSummary) return <p className="text-center mt-10">No payment details available.</p>;
+
 
     return (
         <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
