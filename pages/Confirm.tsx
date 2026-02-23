@@ -70,7 +70,7 @@ const Confirm: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans mb-7">
             
             {/* Header Section */}
             <header className="flex flex-col items-center mb-4 pt-10">
@@ -79,7 +79,7 @@ const Confirm: React.FC = () => {
             </header>
 
             {/* Main Card - Increased max-width and matched padding */}
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in duration-500">
                 <div className="p-6 md:p-12 md:px-25 flex flex-col items-center">
                     
                     {/* Stepper Integration */}
