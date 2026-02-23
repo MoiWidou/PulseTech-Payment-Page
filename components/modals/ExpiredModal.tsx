@@ -13,7 +13,7 @@ const ExpiredModal: React.FC = () => {
                 <Lottie animationData={loading} loop={true} className="w-full md:w-70" />
             </div>
 
-            <h1 className="text-4xl font-bold bg-linear-to-br from-[#2B3565] to-[#0171A3] bg-clip-text text-transparent p-5 mt-10 text-center">
+            <h1 className="text-4xl font-bold bg-linear-to-br from-[#2B3565] to-[#0171A3] bg-clip-text text-transparent p-5 text-center">
                 Oops! This link timed out.
             </h1>
 
