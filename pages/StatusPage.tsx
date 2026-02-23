@@ -126,6 +126,10 @@ function StatusPage() {
         };
 
         fetchData();
+
+        const recheckStatusInterval = setInterval(fetchData, 30_000);
+
+         return () => clearInterval(recheckStatusInterval);
     }, [merchant_username, reference_id]);
 
     // --- Render the correct modal based on status ---
