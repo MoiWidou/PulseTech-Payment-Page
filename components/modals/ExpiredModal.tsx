@@ -17,7 +17,7 @@ const ExpiredModal: React.FC = () => {
                 Oops! This link timed out.
             </h1>
 
-            <h2 className="text-lg max-w-lg bg-linear-to-br from-[#2B3565] to-[#0171A3] bg-clip-text text-transparent font-semibold mb-5 text-center">
+            <h2 className="text-sm max-w-md bg-linear-to-br from-[#2B3565] to-[#0171A3] bg-clip-text text-transparent font-semibold mb-5 text-center">
                 Looks like this payment session has expired. Let’s get you back on track.
             </h2>
 
