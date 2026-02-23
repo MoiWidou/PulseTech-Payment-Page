@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20.17
+    commands:
+      - npm install -g npm@latest
+      - npm ci
+  build:
+    commands:
+      - npm run build --silent
+  post_build:
+    commands:
+      - # Assume prod role first
+      - aws s3 sync ./dist s3://sandbox.payment.pulsetechnologies.xyz/
