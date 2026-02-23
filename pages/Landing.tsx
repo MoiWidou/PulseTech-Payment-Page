@@ -476,7 +476,7 @@ const PaymentPage: React.FC = () => {
                 const selectedBankData = availableBanks.find(
                     (item: BankTransfer) => item.name === selectedBank
                 );
-
+                console.log(selectedBank)
                 if (selectedBankData) {
                     methodCode   = selectedBankData.method_code;
                     providerCode = selectedBankData.provider_code;
