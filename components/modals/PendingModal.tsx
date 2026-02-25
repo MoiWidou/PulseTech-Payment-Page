@@ -47,11 +47,16 @@ const PendingModal: React.FC <ModalProps> = ({paymentSummary, merchantName }) =>
     // const [ paymentSummary, setPaymentSummary] = useState <redirectResponse | null > (null);
     // const [ merchantName, setMerchantName ]    = useState ("");
 
-    const formattedDate = new Date().toLocaleString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-    });
+    const formattedDate = paymentSummary && paymentSummary.created_at
+        ? new Date(paymentSummary.created_at).toLocaleString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+            })
+        : "—";
 
     // useEffect(() => {
     //         if (!merchant_username || !reference_id) return;

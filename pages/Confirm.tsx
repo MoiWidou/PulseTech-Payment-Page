@@ -70,7 +70,7 @@ const Confirm: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans mb-7">
             
             {/* Header Section */}
             <header className="flex flex-col items-center mb-4 pt-10">
@@ -79,7 +79,7 @@ const Confirm: React.FC = () => {
             </header>
 
             {/* Main Card - Increased max-width and matched padding */}
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in duration-500">
                 <div className="p-6 md:p-12 md:px-25 flex flex-col items-center">
                     
                     {/* Stepper Integration */}
@@ -91,28 +91,28 @@ const Confirm: React.FC = () => {
                     <div className="w-full bg-[#F4F6F8] rounded-tr-2xl rounded-tl-2xl border border-gray-100 p-4 shadow-lg">
                         
                         <div className="space-y-2 mb-5 p-3">
-                            <h3 className="text-center font-bold tracking-wider text-[#312B5B] mb-8 text-lg">
+                            <h3 className="text-center font-bold tracking-wider text-[#312B5B] mb-8">
                                 Payment Summary
                             </h3>
                             
-                            <div className="flex justify-between text-[#312B5B] md:text-base">
+                            <div className="flex justify-between text-[#312B5B] text-xs">
                                 <span>Sub Total</span>
-                                <span className="font-medium">{Number(paymentDetails.amount).toFixed(2)}</span>
+                                <span className="font-medium">{Number(paymentDetails.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             </div>
-                            <div className="flex justify-between text-[#312B5B] md:text-base">
+                            <div className="flex justify-between text-[#312B5B] text-xs">
                                 <span>Processing Fee</span>
-                                <span className="font-medium">₱{Number(paymentDetails.paymentResponse?.fees?.processing_fee).toFixed(2)}</span>
+                                <span className="font-medium">₱{Number(paymentDetails.paymentResponse?.fees?.processing_fee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             </div>
-                            <div className="flex justify-between text-[#312B5B] md:text-base">
+                            <div className="flex justify-between text-[#312B5B] text-xs">
                                 <span>System Fee</span>
-                                <span className="font-medium">₱{Number(paymentDetails.paymentResponse?.fees.system_fee).toFixed(2)}</span>
+                                <span className="font-medium">₱{Number(paymentDetails.paymentResponse?.fees.system_fee).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             </div>
                         </div>
 
                         {/* Amount Section with Dashed Divider */}
                         <div className="flex justify-between items-center p-3 border-t border-dashed border-[#6F7282] pt-2 mx-3">
-                            <span className="text-[#312B5B] text-lg font-bold">You are sending</span>
-                            <span className="text-[#312B5B] font-bold text-xl">
+                            <span className="text-[#312B5B] font-bold">You are sending</span>
+                            <span className="text-[#312B5B] font-bold ">
                                 ₱{displayedTotalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </span>
                         </div>
@@ -122,8 +122,8 @@ const Confirm: React.FC = () => {
                         {/* Method Detail Section */}
                         <div className="space-y-2 p-3 px-3 md:text-base">
                             <div className="flex justify-between">
-                                <span className="text-[#312B5B]">Payment Method</span>
-                                <span className="text-[#312B5B] font-medium ml-2">{paymentDetails.methodLabel}</span>
+                                <span className="text-[#312B5B] text-xs">Payment Method</span>
+                                <span className="text-[#312B5B] font-medium ml-2 text-xs">{paymentDetails.methodLabel}</span>
                             </div>
                         </div>  
                     </div>
@@ -150,7 +150,7 @@ const Confirm: React.FC = () => {
                                 if (url) window.location.href = url;
                             }}
                         >
-                            Pay Now
+                            Continue
                         </button>
                     </div>
                 </div>

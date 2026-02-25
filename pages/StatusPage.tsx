@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import SuccessModal from "../components/modals/SuccessModal";
 import FailedModal from "../components/modals/FailedModal";
 import PendingModal from "../components/modals/PendingModal";
+import Expired from "../components/modals/ExpiredModal";
 
 type redirectResponse = {
     transaction_id: string,
@@ -126,6 +127,10 @@ function StatusPage() {
         };
 
         fetchData();
+        //30 seconds refresh
+        const recheckStatusInterval = setInterval(fetchData, 30_000);
+
+         return () => clearInterval(recheckStatusInterval);
     }, [merchant_username, reference_id]);
 
     // --- Render the correct modal based on status ---
@@ -149,6 +154,9 @@ function StatusPage() {
     if (status === "SUCCESS") return <SuccessModal paymentSummary={paymentSummary} merchantName={merchantName} paymentMethod={paymentMethod} />;
     if (status === "FAILED") return <FailedModal paymentSummary={paymentSummary} merchantName={merchantName}/>;
     if (status === "PENDING") return <PendingModal paymentSummary={paymentSummary} merchantName={merchantName}/>;
+    // if (status === "PENDING") return <SuccessModal paymentSummary={paymentSummary} merchantName={merchantName} paymentMethod={paymentMethod} />;
+    // if (status === "PENDING") return <Expired />;
+    if (status === "CLOSED") return <Expired/>;
 
     return null;
 }

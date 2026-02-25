@@ -111,7 +111,7 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
         <div 
             ref={receiptRef}
             id="receipt-section"
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
+            className="bg-white rounded-2xl shadow-xl w-full max-w-xl overflow-hidden animate-in fade-in zoom-in duration-500">
             <div className="p-6 md:p-12 md:px-25 flex flex-col items-center text-center">
             
             {/* Success Badge */}
@@ -129,39 +129,39 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
 
                     <div className="space-y-2 mb-5 p-3">
 
-                        <h3 className="text-center font-bold tracking-wider text-[#312B5B] mb-8 text-lg">Payment Summary</h3>
+                        <h3 className="text-center font-bold tracking-wider text-[#312B5B] mb-8">Payment Summary</h3>
                         
-                        <div className="flex justify-between text-[#312B5B] md:text-base">
+                        <div className="flex justify-between text-[#312B5B] text-xs">
                             <span>Sub Total</span>
                             <span className="font-medium">{(paymentSummary.amount).toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-[#312B5B] md:text-base ">
+                        <div className="flex justify-between text-[#312B5B] text-xs ">
                             <span>Processing Fee</span>
                             <span className="font-medium">₱{Number(paymentSummary.fees.processing_fee).toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-[#312B5B] md:text-base ">
+                        <div className="flex justify-between text-[#312B5B] text-xs ">
                             <span>System Fee</span>
                             <span className="font-medium">₱{Number(paymentSummary.fees.system_fee).toFixed(2)}</span>
                         </div>
                     </div>
 
                     <div className="flex justify-between items-center p-3 border-t border-dashed border-[#6F7282] pt-2 mx-3">
-                        <span className="text-[#312B5B] text-lg font-bold">Amount Paid</span>
-                        <span className="text-[#312B5B] font-bold text-xl">₱ {Number(totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        <span className="text-[#312B5B] font-bold">Amount Paid</span>
+                        <span className="text-[#312B5B] font-bold">₱ {Number(totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 
                     <div className=" border-[#6F7282] border-t border-dashed pt-2 mb-3 mx-3"/>
 
-                    <div className="space-y-2 sm p-3 px-3 md:text-base">
+                    <div className="space-y-2 sm p-3 px-3 text-xs">
                         <div className="flex justify-between">
                         <span className="text-[#312B5B]">Reference No.</span>
                         <span className="text-[#312B5B] font-medium break-all ml-2">{paymentSummary.reference_id}</span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between text-xs">
                         <span className="text-[#312B5B]">
                             Created at
                         </span>
-                        <span className="text-[#312B5B] font-medium ml-2 break-all">
+                        <span className="text-[#312B5B] font-medium ml-2 break-all text-xs">
                             {new Date(paymentSummary.created_at).toLocaleString(undefined, {
                             year: "numeric",
                             month: "short",
@@ -173,8 +173,8 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
                         </span>
                         </div>
                         <div className="flex justify-between">
-                        <span className="text-[#312B5B]">Payment Method</span>
-                        <span className="text-[#312B5B] font-medium ml-2 whitespace-nowrap flex-shrink-0">{paymentMethod}</span>
+                        <span className="text-[#312B5B] text-xs">Payment Method</span>
+                        <span className="text-[#312B5B] font-medium ml-2 whitespace-nowrap flex-shrink-0 text-xs">{paymentMethod}</span>
                         </div>
                     </div>  
             </div>

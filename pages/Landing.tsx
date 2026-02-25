@@ -264,7 +264,7 @@ const PaymentPage: React.FC = () => {
     const success_url         = `${base_url}/${merchant_username}/status`;
     const failed_url          = `${base_url}/${merchant_username}/status`;
     const api_base_url        = import.meta.env.VITE_API_BASE_URL;
-    const username            = import.meta.env.VITE_USERNAME;
+    const username            = merchant_username;
     const payment_methods_url = import.meta.env.VITE_PAYMENT_METHODS_URL;
     const merchant_name_url   = import.meta.env.VITE_MERCHANT_URL;
 
@@ -313,8 +313,8 @@ const PaymentPage: React.FC = () => {
     const [ paymentmethods, setPaymentMethods] = useState<PaymentMethod[]>(PAYMENT_METHODS);
     const [ loadingPaymentMethod, setLoadingPaymentMethod ] = useState (true);
     const [ availableBanks, setAvailableBanks ] = useState<BankTransfer[]>([]);
-    const [ availableOnlineBanks, setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
-    const [ availableOTCBanks, setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
+    const [ availableOnlineBanks, _setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
+    const [ availableOTCBanks, _setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
     const [ availableWalletBanks, setAvailableWalletBanks] = useState<WalletTransfer[]>([]);
     // function sleep(ms: number) {
     //     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -335,10 +335,13 @@ const PaymentPage: React.FC = () => {
         async function fetchData() {
             
             try {
+            if (!username) throw new Error("No merchant username in URL");
+
             setLoadingPaymentMethod (true)            
             setError(null);
 
             // await sleep(5000);
+
 
             const response = await fetch(payment_methods_url, {
                 headers: {
@@ -356,8 +359,8 @@ const PaymentPage: React.FC = () => {
             
             // Set available banks
             setAvailableBanks(apiData.bank_fund_transfer || [])
-            setAvailableOnlineBanks(apiData.online_banking || [])
-            setAvailableOTCBanks(apiData.over_the_counter || [])
+            // setAvailableOnlineBanks(apiData.online_banking || [])
+            // setAvailableOTCBanks(apiData.over_the_counter || [])
             setAvailableWalletBanks(apiData.e_wallet || [])
             setApiResponse(apiData)
             
@@ -367,13 +370,15 @@ const PaymentPage: React.FC = () => {
                 const apiKey = METHOD_API_MAP[method.id];
                 const apiGroup = apiData?.[apiKey];
 
+                const forceDisable = apiKey === "over_the_counter" || apiKey === "online_banking";
+
                 const isEnabled =
                 Array.isArray(apiGroup) &&
                 apiGroup.some((entry: { status: string }) => entry.status === "on");
 
                 return {
                 ...method,
-                disabled: !isEnabled,
+                disabled: forceDisable || !isEnabled,
                 };
             });
 
@@ -404,6 +409,9 @@ const PaymentPage: React.FC = () => {
 
         async function fetchMerchantName() {
             try {
+
+                if (!username) throw new Error("No merchant username in URL");
+
                 setLoadingMerchant(true);
                 setMerchantError(null);
 
@@ -476,7 +484,7 @@ const PaymentPage: React.FC = () => {
                 const selectedBankData = availableBanks.find(
                     (item: BankTransfer) => item.name === selectedBank
                 );
-
+                console.log(selectedBank)
                 if (selectedBankData) {
                     methodCode   = selectedBankData.method_code;
                     providerCode = selectedBankData.provider_code;
@@ -578,6 +586,8 @@ const PaymentPage: React.FC = () => {
         // console.log(success_url)
         // console.log(failed_url)
         try{
+            if (!username) throw new Error("No merchant username in URL");
+
             setPaymentLoading(true)
             const payload = {
                 amount              : amount,
@@ -1317,7 +1327,7 @@ const PaymentPage: React.FC = () => {
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                         >
-                    {paymentLoading ? <Spinner /> : "Pay Now"}
+                    {paymentLoading ? <Spinner /> : "Continue"}
                 </button>
             </div>
             {/* <div className="flex justify-center gap-2 mb-4">
