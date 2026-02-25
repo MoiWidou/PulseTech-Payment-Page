@@ -356,8 +356,8 @@ const PaymentPage: React.FC = () => {
             
             // Set available banks
             setAvailableBanks(apiData.bank_fund_transfer || [])
-            setAvailableOnlineBanks(apiData.online_banking || [])
-            setAvailableOTCBanks(apiData.over_the_counter || [])
+            // setAvailableOnlineBanks(apiData.online_banking || [])
+            // setAvailableOTCBanks(apiData.over_the_counter || [])
             setAvailableWalletBanks(apiData.e_wallet || [])
             setApiResponse(apiData)
             
