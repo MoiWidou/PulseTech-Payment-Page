@@ -313,8 +313,8 @@ const PaymentPage: React.FC = () => {
     const [ paymentmethods, setPaymentMethods] = useState<PaymentMethod[]>(PAYMENT_METHODS);
     const [ loadingPaymentMethod, setLoadingPaymentMethod ] = useState (true);
     const [ availableBanks, setAvailableBanks ] = useState<BankTransfer[]>([]);
-    const [ availableOnlineBanks, setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
-    const [ availableOTCBanks, setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
+    const [ availableOnlineBanks, _setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
+    const [ availableOTCBanks, _setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
     const [ availableWalletBanks, setAvailableWalletBanks] = useState<WalletTransfer[]>([]);
     // function sleep(ms: number) {
     //     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -335,10 +335,13 @@ const PaymentPage: React.FC = () => {
         async function fetchData() {
             
             try {
+            if (!username) throw new Error("No merchant username in URL");
+
             setLoadingPaymentMethod (true)            
             setError(null);
 
             // await sleep(5000);
+
 
             const response = await fetch(payment_methods_url, {
                 headers: {
@@ -404,6 +407,9 @@ const PaymentPage: React.FC = () => {
 
         async function fetchMerchantName() {
             try {
+
+                if (!username) throw new Error("No merchant username in URL");
+
                 setLoadingMerchant(true);
                 setMerchantError(null);
 
@@ -578,6 +584,8 @@ const PaymentPage: React.FC = () => {
         // console.log(success_url)
         // console.log(failed_url)
         try{
+            if (!username) throw new Error("No merchant username in URL");
+
             setPaymentLoading(true)
             const payload = {
                 amount              : amount,
