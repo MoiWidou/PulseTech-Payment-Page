@@ -370,13 +370,15 @@ const PaymentPage: React.FC = () => {
                 const apiKey = METHOD_API_MAP[method.id];
                 const apiGroup = apiData?.[apiKey];
 
+                const forceDisable = apiKey === "over_the_counter" || apiKey === "online_banking";
+
                 const isEnabled =
                 Array.isArray(apiGroup) &&
                 apiGroup.some((entry: { status: string }) => entry.status === "on");
 
                 return {
                 ...method,
-                disabled: !isEnabled,
+                disabled: forceDisable || !isEnabled,
                 };
             });
 
