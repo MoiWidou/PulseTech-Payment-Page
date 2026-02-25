@@ -313,8 +313,8 @@ const PaymentPage: React.FC = () => {
     const [ paymentmethods, setPaymentMethods] = useState<PaymentMethod[]>(PAYMENT_METHODS);
     const [ loadingPaymentMethod, setLoadingPaymentMethod ] = useState (true);
     const [ availableBanks, setAvailableBanks ] = useState<BankTransfer[]>([]);
-    const [ availableOnlineBanks, _setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
-    const [ availableOTCBanks, _setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
+    const [ availableOnlineBanks, setAvailableOnlineBanks ] = useState<OnlineBanks[]>([]);
+    const [ availableOTCBanks, setAvailableOTCBanks ] = useState<OTCTransfer[]>([]);
     const [ availableWalletBanks, setAvailableWalletBanks] = useState<WalletTransfer[]>([]);
     // function sleep(ms: number) {
     //     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -359,8 +359,8 @@ const PaymentPage: React.FC = () => {
             
             // Set available banks
             setAvailableBanks(apiData.bank_fund_transfer || [])
-            // setAvailableOnlineBanks(apiData.online_banking || [])
-            // setAvailableOTCBanks(apiData.over_the_counter || [])
+            setAvailableOnlineBanks(apiData.online_banking || [])
+            setAvailableOTCBanks(apiData.over_the_counter || [])
             setAvailableWalletBanks(apiData.e_wallet || [])
             setApiResponse(apiData)
             
@@ -378,6 +378,7 @@ const PaymentPage: React.FC = () => {
 
                 return {
                 ...method,
+                // disabled: forceDisable || !isEnabled,
                 disabled: forceDisable || !isEnabled,
                 };
             });
