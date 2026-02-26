@@ -1,6 +1,6 @@
 import { useSearchParams, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SuccessModal from "../components/modals/SuccessModal";
+// import SuccessModal from "../components/modals/SuccessModal";
 import FailedModal from "../components/modals/FailedModal";
 import PendingModal from "../components/modals/PendingModal";
 import Expired from "../components/modals/ExpiredModal";
@@ -52,7 +52,7 @@ function StatusPage() {
     const [error, setError] = useState<string | null>(null);
     const [paymentSummary, setPaymentSummary] = useState <redirectResponse | null> (null);
     const [merchantName, setMerchantName] = useState("");
-    const [paymentMethod, setPaymentMethod] = useState("");
+    // const [paymentMethod, setPaymentMethod] = useState("");
     const [status, setStatus] = useState<string | null>(null); // <-- track payment status
 
     const Spinner = () => (
@@ -97,7 +97,7 @@ function StatusPage() {
                 setStatus(paymentData.status);
 
                 const paymentMethodData = paymentData.payment_method;
-                let matchedName = "";
+                // let matchedName = "";
 
                 // Loop through all categories in methodData
                 for (const categoryKey in methodData) {
@@ -108,7 +108,7 @@ function StatusPage() {
                             item.provider_code === paymentMethodData.provider_code
                     );
                     if (match) {
-                        matchedName = match.name;
+                        // matchedName = match.name;
                         break;
                     }
                 }
@@ -116,7 +116,7 @@ function StatusPage() {
                 // Set the rest of the state
                 setPaymentSummary(paymentData);
                 setMerchantName(merchantData.merchant_name);
-                setPaymentMethod(matchedName);
+                // setPaymentMethod(matchedName);
 
             } catch (err) {
                 if (err instanceof Error) setError(err.message);
