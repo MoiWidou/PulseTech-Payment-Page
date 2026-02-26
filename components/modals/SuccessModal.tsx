@@ -71,7 +71,7 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
 
     return (
         /* UI Style Update: Background gradient changed to match Green scheme */
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#E6F4F1] p-2 font-sans mb-7">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#C9FCE9] p-2 font-sans mb-7">
         
         {/* Header Section */}
         <header className="flex flex-col items-center mb-4 pt-10">

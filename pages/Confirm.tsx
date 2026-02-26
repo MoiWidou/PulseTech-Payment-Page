@@ -71,7 +71,7 @@ const Confirm: React.FC = () => {
 
     return (
         /* UI Style Update: Background from Purple to Light Greenish/White */
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#E6F4F1] p-2 font-sans mb-7">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#C9FCE9] p-2 font-sans mb-7">
             
             {/* Header Section */}
             <header className="flex flex-col items-center mb-4 pt-10">

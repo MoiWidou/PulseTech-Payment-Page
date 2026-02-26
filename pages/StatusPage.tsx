@@ -143,7 +143,7 @@ function StatusPage() {
     }
     if (error) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] text-center px-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#C9FCE9] text-center px-4">
                 <p className="text-red-600 font-semibold mb-2">Something went wrong</p>
                 <p className="text-[#312B5B] text-sm">{error}</p>
             </div>

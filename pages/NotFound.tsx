@@ -3,7 +3,7 @@ import catAnimation from "../src/assets/animations/Loader cat.json";
 
 const NotFound: React.FC = () => (
   /* UI Style Update: Background gradient stop changed to Light Green/Teal */
-  <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#E6F4F1]">
+  <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#C9FCE9]">
         
         {/* UI Style Update: Text gradient changed to Dark Green/Emerald */}
         <h1 className="text-9xl font-bold bg-linear-to-br from-[#064e3b] to-[#10b981] bg-clip-text text-transparent p-5 mt-10">

@@ -61,7 +61,7 @@ const FailedModal: React.FC <ModalProps> = ({paymentSummary, merchantName}) => {
 
     return (
         /* UI Style Update: Background gradient stop changed to Light Green/Teal */
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#E6F4F1] p-2 font-sans">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#C9FCE9] p-2 font-sans">
         
             {/* Header Section */}
             <div className="flex flex-col items-center mb-4">
