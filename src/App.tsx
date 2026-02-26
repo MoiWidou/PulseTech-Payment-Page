@@ -15,12 +15,12 @@ function App() {
     if (window.location.pathname === "/") {
         window.location.replace(website_base_url); // replaces history entry
     }
-    
+
   return (
     <>
       <Router>
       <Routes>
-        <Route path="/" element={<Navigate to={`/${website_base_url}`} replace />} />
+        {/* <Route path="/" element={<Navigate to={`/${website_base_url}`} replace />} /> */}
         <Route path="/:merchant_username" element={<Landing />} />
         {/* <Route path="/:merchant_username/status/success" element={<SuccessModal />} />
         <Route path="/:merchant_username/status/failed" element={<FailedModal />} />
