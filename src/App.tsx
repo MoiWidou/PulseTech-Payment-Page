@@ -12,6 +12,10 @@ function App() {
 
     const website_base_url = import.meta.env.VITE_WEBSITE_URL;
 
+    if (window.location.pathname === "/") {
+        window.location.replace(website_base_url); // replaces history entry
+    }
+    
   return (
     <>
       <Router>
