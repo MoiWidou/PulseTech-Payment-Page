@@ -129,13 +129,15 @@ const PendingModal: React.FC <ModalProps> = ({paymentSummary, merchantName }) =>
 
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans">
+        /* UI Style Update: Background gradient from Purple to Light Green */
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-linear-to-br from-[#FFFFFF] to-[#E6F4F1] p-2 font-sans">
         
             {/* Header Section */}
             <div className="flex flex-col items-center mb-4">
                 <div className="w-20 h-20 bg-gray-300 rounded-full mb-2 shadow-inner" />
-                <h2 className="text-[#312B5B] text-lg font-bold">{merchantName}</h2>
-                <div className="flex gap-2 mt-1 text-[#312B5B]">
+                {/* UI Style Update: Text color from Purple to Dark Green */}
+                <h2 className="text-[#064e3b] text-lg font-bold">{merchantName}</h2>
+                <div className="flex gap-2 mt-1 text-[#064e3b]">
                     {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
                     <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
                     <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" /> */}
@@ -146,24 +148,26 @@ const PendingModal: React.FC <ModalProps> = ({paymentSummary, merchantName }) =>
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
                 <div className="p-8 md:p-10 flex flex-col items-center text-center">
                 
-                    {/* Pending Icon (Yellow circle with white dots) */}
+                    {/* Pending Icon (Keep Yellow for 'Warning/Pending' but adjust shadow if needed) */}
                     <div className="mb-6 flex items-center justify-center w-14 h-14 bg-[#D4AF37] rounded-full shadow-sm animate-pulse">
                         <MoreHorizontal size={32} color="white" strokeWidth={3} />
                     </div>
 
                     <h1 className="text-black text-2xl font-bold mb-1">Pending...</h1>
                     
-                    <div className="text-[#312B5B] opacity-90 text-xs md:text-sm leading-snug mb-10 max-w-lg">
+                    {/* UI Style Update: Text color from Purple to Dark Green */}
+                    <div className="text-[#064e3b] opacity-90 text-xs md:text-sm leading-snug mb-10 max-w-lg">
                         <p>Thank you for your payment request.</p>
                         <p>Your transaction is currently pending and is being processed.</p>
                     </div>
 
                     {/* Central Amount Display */}
                     <div className="mb-10">
-                        <p className="text-xs md:text-sm text-[#312B5B]">
+                        <p className="text-xs md:text-sm text-[#064e3b]">
                             You have initiated a payment to
                         </p>
-                        <p className="text-[#007AFF] font-medium text-xs md:text-sm cursor-pointer">
+                        {/* UI Style Update: Changed Blue link to Emerald Green link */}
+                        <p className="text-[#10b981] font-medium text-xs md:text-sm cursor-pointer">
                             {merchantName}
                         </p>
                         <h2 className="text-4xl font-bold text-black my-2">
@@ -179,7 +183,8 @@ const PendingModal: React.FC <ModalProps> = ({paymentSummary, merchantName }) =>
                     {/* Action Button */}
                     <div className="w-full flex justify-center">
                         <button 
-                            className="w-full max-w-60 bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
+                            /* UI Style Update: Gradient from Purple/Navy to Dark Green/Emerald */
+                            className="w-full max-w-60 bg-linear-to-r from-[#064e3b] to-[#10b981] hover:from-[#065f46] hover:to-[#059669] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
                             onClick={() => navigate(`/${merchant_username}`)}
                         >
                             Make Another Payment
