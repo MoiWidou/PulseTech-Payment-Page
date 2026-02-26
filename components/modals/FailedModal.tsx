@@ -122,7 +122,7 @@ const FailedModal: React.FC <ModalProps> = ({paymentSummary, merchantName}) => {
                     <div className="w-full flex justify-center">
                         <button 
                             /* UI Style Update: Gradient to Dark Green/Emerald */
-                            className="w-full max-w-60 bg-linear-to-r from-[#064e3b] to-[#10b981] hover:from-[#065f46] hover:to-[#059669] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
+                            className="w-full max-w-60 bg-[#202122] text-[#75EEA5] cursor-pointer hover:from-[#1B2A27] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
                             onClick={() => navigate(`/${merchant_username}`)}
                         >
                             Make Another Payment
