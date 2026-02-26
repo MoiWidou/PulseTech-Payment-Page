@@ -35,21 +35,6 @@ type redirectResponse = {
     }
 }
 
-// type PaymentMethodItem = {
-//     provider_code: string;
-//     name: string;
-//     short_name: string;
-//     main_logo_url: string;
-//     status: string;
-//     country_code: string;
-//     fee_value: string | null;
-//     fee_type: string | null;
-//     method_code: string;
-//     category: string;
-// }
-
-// type PaymentMethodsResponse = Record<string, PaymentMethodItem[]>;
-
 type ModalProps = {
   paymentSummary: redirectResponse | null;
   merchantName: string;
@@ -61,30 +46,22 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
     const navigate              = useNavigate();
     const { merchant_username } = useParams();
     
-    // const location                             = useLocation();
-    // const { paymentSummary } = location.state || {};
-    
     const receiptRef = useRef<HTMLDivElement>(null);
 
-    // Safety fallback (if somehow no loading, no error, but no data)
     if (!paymentSummary) return null;
 
-    // const { totalAmount, method, _subTotal, _processingFee, _systemFee } = paymentSummary;
-    // const { totalAmount, method, referenceNo, dateTime, merchantName} = paymentSummary;
     const totalAmount = (Number(paymentSummary?.amount)) + (Number(paymentSummary?.fees?.processing_fee)) + (Number(paymentSummary?.fees?.system_fee))
 
     const handleDownload = async () => {
         if (!receiptRef.current) return;
 
         try {
-            // Capture the receipt as PNG
             const dataUrl = await toPng(receiptRef.current, {
             cacheBust: true,
-            pixelRatio: 2, // better quality
+            pixelRatio: 2, 
             backgroundColor: '#ffffff'
             });
 
-            // Trigger automatic download
             saveAs(dataUrl, `Receipt-${paymentSummary?.reference_id}.png`);
         } catch (err) {
             console.error('Failed to download receipt', err);
@@ -92,19 +69,15 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
         }
     };
 
-    // console.log(paymentSummary.methodId)
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#D0BBE6] p-2 font-sans mb-7">
+        /* UI Style Update: Background gradient changed to match Green scheme */
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFFFFF] to-[#E6F4F1] p-2 font-sans mb-7">
         
         {/* Header Section */}
         <header className="flex flex-col items-center mb-4 pt-10">
             <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2" />
-            <h2 className="text-[#312B5B] text-lg font-bold">{merchantName}</h2>
-            <div className="flex gap-2 mt-1 text-[#312B5B]">
-            {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
-            <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
-            <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" /> */}
-            </div>
+            {/* UI Style Update: Text color from Purple to Dark Green */}
+            <h2 className="text-[#064e3b] text-lg font-bold">{merchantName}</h2>
         </header>
 
         {/* Main Success Card */}
@@ -119,49 +92,53 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
                 <SharpSuccessBadge className="w-full h-full"/>
             </div>
 
-            <h1 className="text-[#312B5B] text-xl md:text-lg font-bold mb-1">Payment Successful</h1>
+            {/* UI Style Update: Text color from Purple to Dark Green */}
+            <h1 className="text-[#064e3b] text-xl md:text-lg font-bold mb-1">Payment Successful</h1>
             <p className="text-[#6F7282] text-xs md:text-sm sm leading-snug mb-4 max-w-100">
                 Thank you for your payment. Your payment has been processed successfully.
             </p>
 
             {/* Details Table */}
-            <div className="w-full bg-[#F4F6F8] rounded-tr-2xl rounded-tl-2xl border border-gray-100 p-4 shadow-lg">
+            <div className="w-full bg-[#F9FAFB] rounded-tr-2xl rounded-tl-2xl border border-gray-100 p-4 shadow-lg">
 
                     <div className="space-y-2 mb-5 p-3">
 
-                        <h3 className="text-center font-bold tracking-wider text-[#312B5B] mb-8">Payment Summary</h3>
+                        {/* UI Style Update: Text color to Dark Green */}
+                        <h3 className="text-center font-bold tracking-wider text-[#064e3b] mb-8">Payment Summary</h3>
                         
-                        <div className="flex justify-between text-[#312B5B] text-xs">
+                        {/* UI Style Update: Row text colors to Dark Green */}
+                        <div className="flex justify-between text-[#064e3b] text-xs">
                             <span>Sub Total</span>
                             <span className="font-medium">{(paymentSummary.amount).toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-[#312B5B] text-xs ">
+                        <div className="flex justify-between text-[#064e3b] text-xs ">
                             <span>Processing Fee</span>
                             <span className="font-medium">₱{Number(paymentSummary.fees.processing_fee).toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-[#312B5B] text-xs ">
+                        <div className="flex justify-between text-[#064e3b] text-xs ">
                             <span>System Fee</span>
                             <span className="font-medium">₱{Number(paymentSummary.fees.system_fee).toFixed(2)}</span>
                         </div>
                     </div>
 
-                    <div className="flex justify-between items-center p-3 border-t border-dashed border-[#6F7282] pt-2 mx-3">
-                        <span className="text-[#312B5B] font-bold">Amount Paid</span>
-                        <span className="text-[#312B5B] font-bold">₱ {Number(totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    {/* UI Style Update: Border and Text color to Dark Green/Slate */}
+                    <div className="flex justify-between items-center p-3 border-t border-dashed border-[#A0AEC0] pt-2 mx-3">
+                        <span className="text-[#064e3b] font-bold">Amount Paid</span>
+                        <span className="text-[#064e3b] font-bold">₱ {Number(totalAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 
-                    <div className=" border-[#6F7282] border-t border-dashed pt-2 mb-3 mx-3"/>
+                    <div className=" border-[#A0AEC0] border-t border-dashed pt-2 mb-3 mx-3"/>
 
                     <div className="space-y-2 sm p-3 px-3 text-xs">
                         <div className="flex justify-between">
-                        <span className="text-[#312B5B]">Reference No.</span>
-                        <span className="text-[#312B5B] font-medium break-all ml-2">{paymentSummary.reference_id}</span>
+                        <span className="text-[#064e3b]">Reference No.</span>
+                        <span className="text-[#064e3b] font-medium break-all ml-2">{paymentSummary.reference_id}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                        <span className="text-[#312B5B]">
+                        <span className="text-[#064e3b]">
                             Created at
                         </span>
-                        <span className="text-[#312B5B] font-medium ml-2 break-all text-xs">
+                        <span className="text-[#064e3b] font-medium ml-2 break-all text-xs">
                             {new Date(paymentSummary.created_at).toLocaleString(undefined, {
                             year: "numeric",
                             month: "short",
@@ -173,8 +150,8 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
                         </span>
                         </div>
                         <div className="flex justify-between">
-                        <span className="text-[#312B5B] text-xs">Payment Method</span>
-                        <span className="text-[#312B5B] font-medium ml-2 whitespace-nowrap flex-shrink-0 text-xs">{paymentMethod}</span>
+                        <span className="text-[#064e3b] text-xs">Payment Method</span>
+                        <span className="text-[#064e3b] font-medium ml-2 whitespace-nowrap flex-shrink-0 text-xs">{paymentMethod}</span>
                         </div>
                     </div>  
             </div>
@@ -183,7 +160,8 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
             {/* Security Footer */}
             <div className="bg-white border border-gray-100 rounded-bl-xl rounded-br-xl py-5 px-3 mb-4 shadow-lg w-full">
                 <p className="text-[11px] text-[#6F7282]">
-                Make sure the browser bar displays <span className="font-bold text-[#312B5B]">PulseTech</span>
+                {/* UI Style Update: Text Highlight to Dark Green */}
+                Make sure the browser bar displays <span className="font-bold text-[#064e3b]">PulseTech</span>
                 </p>
             </div>
 
@@ -191,12 +169,14 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5 lg:gap-10 w-full md:pt-10">
                 <button
                     onClick={handleDownload} 
-                    className="flex w-[60%] md:w-full mx-auto items-center justify-center gap-1 border border-[#312B5B] text-[#312B5B] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 font-semibold py-2.5 px-4 rounded-lg hover:bg-gray-100 transition-colors sm text-xs">
+                    /* UI Style Update: Border/Text to Dark Green, Hover to Light Emerald */
+                    className="flex w-[60%] md:w-full mx-auto items-center justify-center gap-1 border border-[#064e3b] text-[#064e3b] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 font-semibold py-2.5 px-4 rounded-lg hover:bg-emerald-50 transition-colors sm text-xs">
                         <Printer size={14} />
                         Print Receipt
                 </button>
                 <button 
-                        className="w-[60%] md:w-full mx-auto max-w-60 bg-linear-to-r from-[#2B3565] to-[#0171A3] hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 text-white font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
+                        /* UI Style Update: Gradient to Dark Green/Emerald */
+                        className="w-[60%] md:w-full mx-auto max-w-60 bg-[#202122] text-[#75EEA5] cursor-pointer hover:from-[#1B2A27] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 font-semibold py-2.5 px-4 rounded-lg transition-all shadow-md text-xs"
                         onClick={() => navigate(`/${merchant_username}`)}
                     >
                         Make Another Payment
@@ -211,5 +191,3 @@ const SuccessModal: React.FC<ModalProps>= ({paymentSummary, merchantName, paymen
 };
 
 export default SuccessModal;
-
-

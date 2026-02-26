@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body {
-  @apply bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] min-h-screen;
+  @apply bg-linear-to-br from-[#FFFFFF] to-[#C9FCE9] min-h-screen;
 }
 
 
