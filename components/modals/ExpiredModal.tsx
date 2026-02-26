@@ -9,7 +9,11 @@ const ExpiredModal: React.FC = () => {
 
     return (
         /* UI Style Update: Background gradient changed to Light Green/Teal */
+<<<<<<< HEAD
         <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#C9FCE9]">
+=======
+        <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#E6F4F1]">
+>>>>>>> 6e3ec55 (Change color scheme)
             <div className="flex items-center justify-center">
                 <Lottie animationData={loading} loop={true} className="w-full md:w-70" />
             </div>
