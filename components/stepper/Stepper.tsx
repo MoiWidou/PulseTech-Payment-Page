@@ -13,17 +13,17 @@ const Stepper: React.FC<StepperProps> = ({ steps, currentStep }) => {
         const isCompleted = stepNum < currentStep;
         const isActive = stepNum === currentStep;
         
-        // Logic to match the image: Line is blue if the step it's coming from is active or completed
-        const isLineActive = stepNum < currentStep || (stepNum === currentStep && idx < steps.length - 1);
+        // Line is green if the step it's coming from is active or completed
+        const isLineActive = stepNum < currentStep;
 
         return (
           <React.Fragment key={step}>
             {/* Step Circle */}
             <div
-              className={`relative z-10 flex items-center justify-center w-6 h-6 rounded-full border-[3px] text-xs font-bold transition-colors duration-300 ${
+              className={`relative z-10 flex items-center justify-center w-6 h-6 rounded-full border-[2px] text-xs font-bold transition-all duration-300 ${
                 isActive || isCompleted
-                  ? "bg-linear-to-r from-[#2B3565] to-[#0171A3] border-[#2B3565] text-white"
-                  : "bg-white border-[#2B3565] text-[#1a1a1a]"
+                  ? "bg-gradient-to-r from-[#064e3b] to-[#10b981] border-[#064e3b] text-white"
+                  : "bg-white border-[#d1d5db] text-[#6b7280]"
               }`}
             >
               {stepNum}
@@ -32,8 +32,8 @@ const Stepper: React.FC<StepperProps> = ({ steps, currentStep }) => {
             {/* Connecting Line */}
             {idx < steps.length - 1 && (
               <div
-                className={`flex-1 h-[3px] transition-colors duration-300 ${
-                  isLineActive ? "bg-[#2B3565]" : "bg-[#646c7f]"
+                className={`flex-1 h-[2px] transition-colors duration-300 ${
+                  isLineActive ? "bg-[#064e3b]" : "bg-[#d1d5db]"
                 }`}
               />
             )}

@@ -689,7 +689,7 @@ const PaymentPage: React.FC = () => {
     // }
 
     const Spinner = () => (
-        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-blue-300 rounded-full animate-spin" />
+        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-green-300 rounded-full animate-spin" />
     );
 
     useEffect(() => {
@@ -756,21 +756,21 @@ const PaymentPage: React.FC = () => {
         {loadingMerchant && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-16 h-16 border-4 border-gray-300 border-t-[#312B5B] rounded-full animate-spin" />
-                    {/* <p className="text-sm font-semibold text-[#312B5B]">
+                    <div className="w-16 h-16 border-4 border-[#c8f8db] border-t-[#75EEA5] rounded-full animate-spin" />
+                    {/* <p className="text-sm font-semibold text-[#1B2A27]">
                         
                     </p> */}
                 </div>
             </div>
         )}
 
-        <div className="min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#D0BBE6] flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
+        <div className="min-h-screen bg-linear-to-br from-[#FFFFFF] to-[#C9FCE9] flex flex-col items-center justify-center p-2 sm:p-4 font-sans text-slate-700">
         
         {/* Condensed Header */}
         <header className="flex flex-col items-center mb-4 pt-10">
             <div className="w-20 h-20 bg-[#D9D9D9] rounded-full mb-2" />
-            <h2 className="text-lg font-bold text-[#312B5B]">{merchantName}</h2>
-            <div className="flex gap-4 mt-1 text-[#312B5B]">
+            <h2 className="text-lg font-bold text-[#1B2A27]">{merchantName}</h2>
+            <div className="flex gap-4 mt-1 text-[#1B2A27]">
             {/* <Facebook size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
                             <Instagram size={16} className="cursor-pointer hover:opacity-70 transition-opacity" />
                             <Link2 size={16} className="cursor-pointer hover:opacity-70 transition-opacity" /> */}
@@ -791,12 +791,12 @@ const PaymentPage: React.FC = () => {
                 <div className="lg:col-span-2 space-y-5 md:space-x-8">
                     <div className="w-full" ref={formRef}>
                         <section className='mb-5'>
-                            <h2 className="text-center font-bold text-[#312B5B] md:text-center">Enter Amount</h2>
-                            <p className="text-xs text-center text-[#37416C] mb-2 md:text-center ">How much would you like to pay?</p>
+                            <h2 className="text-center font-bold text-[#1B2A27] md:text-center">Enter Amount</h2>
+                            <p className="text-xs text-center text-[#1B2A27] mb-2 md:text-center ">How much would you like to pay?</p>
                             
                             <div className="mb-2 flex justify-center md:justify-center">
                                 <div className="flex items-center w-[70%] md:w-1/2 border border-slate-300 rounded-lg px-2 py-1.5">
-                                    <span className="font-bold text-[#312B5B] mr-1">₱</span>
+                                    <span className="font-bold text-[#1B2A27] mr-1">₱</span>
                                     <input
                                     type="text"
                                     value={amount.toLocaleString()}
@@ -814,7 +814,7 @@ const PaymentPage: React.FC = () => {
                                     onClick={() => setAmount(val)}
                                     className={`w-full py-2 border rounded-lg text-xs font-semibold transition-all ${
                                     amount === val 
-                                        ? 'bg-[#312B5B] border-[#312B5B] text-white' 
+                                        ? 'bg-[#75EEA5] border-[#75EEA5] text-[#112432]' 
                                         : 'border-slate-300 text-slate-500 hover:border-slate-300 cursor-pointer'
                                     }`}
                                 >
@@ -825,8 +825,8 @@ const PaymentPage: React.FC = () => {
                         </section>
 
                         <section >
-                        <h2 className="text-center md:text-center font-bold text-[#312B5B]">Payment Method</h2>
-                        <p className="text-xs text-center md:text-center text-[#37416C] mb-2">Select how you want to pay</p>
+                        <h2 className="text-center md:text-center font-bold text-[#1B2A27]">Payment Method</h2>
+                        <p className="text-xs text-center md:text-center text-[#1B2A27] mb-2">Select how you want to pay</p>
                         
                         <div className="md:grid md:grid-cols-3 grid grid-cols-2 gap-2 mb-3">
                             {paymentmethods.map((item) => (
@@ -841,7 +841,7 @@ const PaymentPage: React.FC = () => {
                                         ? 'opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border-gray-200'
                                         :
                                     method === item.id 
-                                    ? 'bg-[#312B5B] border-[#312B5B] text-white' 
+                                    ? 'bg-[#75EEA5] border-[#42ff8e] text-#112432' 
                                     : 'border-slate-300 text-slate-500 hover:border-slate-300 cursor-pointer' 
                                     }`}
                             >
@@ -870,7 +870,7 @@ const PaymentPage: React.FC = () => {
                     {method === 'card' && (
 
                     <div >
-                        <p className="p-2 text-xs font-bold text-[#312B5B]">
+                        <p className="p-2 text-xs font-bold text-[#1B2A27]">
                             What type of card are you using?
                         </p>
                         
@@ -891,7 +891,7 @@ const PaymentPage: React.FC = () => {
                             key={card.id}
                             className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                 isSelected
-                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                ? "border-[#1B2A27] bg-[#F7F8FA] shadow-sm"
                                 : "border-transparent hover:bg-gray-50"
                             }`}
                             >
@@ -901,19 +901,19 @@ const PaymentPage: React.FC = () => {
                                 name="paymentMethod"
                                 checked={isSelected}
                                 onChange={() => setSelectedCard(card.id)}
-                                className="w-4 h-4 accent-[#312B5B] shrink-0"
+                                className="w-4 h-4 accent-[#007C5E] shrink-0"
                                 />
                     
                                 <Icon
-                                className="w-5 h-5 text-[#312B5B] shrink-0"
+                                className="w-5 h-5 text-[#1B2A27] shrink-0"
                                 strokeWidth={1.5}
                                 />
                     
                                 <div className="flex flex-col">
-                                <span className="text-sm font-bold text-[#312B5B]">
+                                <span className="text-sm font-bold text-[#1B2A27]">
                                     {card.name}
                                 </span>
-                                <span className="text-xs text-[#312B5B]">
+                                <span className="text-xs text-[#1B2A27]">
                                     {card.description}
                                 </span>
                                 </div>
@@ -928,7 +928,7 @@ const PaymentPage: React.FC = () => {
                     {method === 'bank' && (
                         
                         <div>
-                            <p className="p-2 text-xs font-bold text-[#312B5B]">
+                            <p className="p-2 text-xs font-bold text-[#1B2A27]">
                                 What bank will you use?
                             </p>
                             <div
@@ -946,7 +946,7 @@ const PaymentPage: React.FC = () => {
                                 key={bank.name}
                                 className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                     isSelected
-                                    ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                    ? "border-[#1B2A27] bg-[#F7F8FA] shadow-sm"
                                     : "border-transparent hover:bg-gray-50"
                                 }`}
                                 >
@@ -956,7 +956,7 @@ const PaymentPage: React.FC = () => {
                                     name="bank"
                                     checked={isSelected}
                                     onChange={() => setSelectedBank(bank.name)}
-                                    className="w-4 h-4 accent-[#312B5B] shrink-0"
+                                    className="w-4 h-4 accent-[#007C5E] shrink-0"
                                     />
 
                                     <img
@@ -966,10 +966,10 @@ const PaymentPage: React.FC = () => {
                                     />
 
                                     <div className="flex flex-col">
-                                    <span className="text-sm font-bold text-[#312B5B]">
+                                    <span className="text-sm font-bold text-[#1B2A27]">
                                         {bank.name}
                                     </span>
-                                    {/* <span className="text-xs text-[#312B5B]">
+                                    {/* <span className="text-xs text-[#1B2A27]">
                                         {bank.description}
                                     </span> */}
                                     </div>
@@ -985,7 +985,7 @@ const PaymentPage: React.FC = () => {
 
                     {method === 'online' && (
                     <div>
-                        <p className="p-2 text-xs font-bold text-[#312B5B]">
+                        <p className="p-2 text-xs font-bold text-[#1B2A27]">
                             What type of online banking would you use?
                         </p>
                         <div className="flex mb-3 w-[60%] md:w-[70%] mx-auto items-center justify-center">
@@ -1003,8 +1003,8 @@ const PaymentPage: React.FC = () => {
                             <div
                             className={`flex items-center justify-center whitespace-nowrap gap-3 py-3 px-4 rounded-tl rounded-bl transition-all duration-200 ${
                                 onlineSelectedDevice === "desktop"
-                                ? "bg-[#312B5B] text-white shadow-md"
-                                : "text-[#312B5B] hover:bg-gray-200"
+                                ? "bg-[#1B2A27] text-white shadow-md"
+                                : "text-[#1B2A27] hover:bg-gray-200"
                             }`}
                             >
                             <Monitor
@@ -1036,8 +1036,8 @@ const PaymentPage: React.FC = () => {
                             <div
                             className={`flex items-center justify-center whitespace-nowrap  gap-3 py-3 px-4 rounded-tr rounded-br transition-all duration-200 ${
                                 onlineSelectedDevice === "mobile"
-                                ? "bg-[#312B5B] text-white shadow-md"
-                                : "text-[#312B5B] hover:bg-gray-200"
+                                ? "bg-[#1B2A27] text-white shadow-md"
+                                : "text-[#1B2A27] hover:bg-gray-200"
                             }`}
                             >
                             <Smartphone
@@ -1073,7 +1073,7 @@ const PaymentPage: React.FC = () => {
                                 key={bank.name}
                                 className={`flex items-center gap-4 p-2 rounded-md text-xs transition-all duration-300 w-full lg:w-full mx-auto cursor-pointer overflow-hidden ${
                                     isSelected
-                                    ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                    ? "border-[#1B2A27] bg-[#F7F8FA] shadow-sm"
                                     : "border-transparent hover:bg-gray-50"
                                 }`}
                                 >
@@ -1082,7 +1082,7 @@ const PaymentPage: React.FC = () => {
                                     name="onlineMethod"
                                     checked={isSelected}
                                     onChange={() => setSelectedOnlineBank(bank.name)}
-                                    className="w-4 h-4 accent-[#312B5B] shrink-0"
+                                    className="w-4 h-4 accent-[#007C5E] shrink-0"
                                 />
 
                                 <div className="w-9 h-9 rounded flex items-center justify-center shrink-0 overflow-hidden">
@@ -1094,7 +1094,7 @@ const PaymentPage: React.FC = () => {
                                 </div>
 
                                 <div className="flex flex-col leading-tight">
-                                    <span className="text-sm font-bold text-[#312B5B]">{bank.name}</span>
+                                    <span className="text-sm font-bold text-[#1B2A27]">{bank.name}</span>
                                     {/* Optional description */}
                                 </div>
                                 </label>
@@ -1108,7 +1108,7 @@ const PaymentPage: React.FC = () => {
                     {method === 'otc' && (
                         <div>
                         
-                            <p className="p-2 text-xs font-bold text-[#312B5B]">
+                            <p className="p-2 text-xs font-bold text-[#1B2A27]">
                                 What kind of OTC do you prefer?
                             </p>
 
@@ -1128,7 +1128,7 @@ const PaymentPage: React.FC = () => {
                             key={otc.name}
                             className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                 isSelected
-                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                ? "border-[#1B2A27] bg-[#F7F8FA] shadow-sm"
                                 : "border-transparent hover:bg-gray-50"
                             }`}
                             >
@@ -1138,7 +1138,7 @@ const PaymentPage: React.FC = () => {
                                 name="onlineMethod"
                                 checked={isSelected}
                                 onChange={() => setSelectedOnlineOTC(otc.name)}
-                                className="w-4 h-4 accent-[#312B5B] shrink-0"
+                                className="w-4 h-4 accent-[#007C5E] shrink-0"
                                 />
 
                                 {/* <div className="w-5 h-5 rounded flex items-center justify-center shrink-0 overflow-hidden">
@@ -1152,11 +1152,11 @@ const PaymentPage: React.FC = () => {
                                 />
 
                                 <div className="flex flex-col leading-tight">
-                                <span className="text-sm font-bold text-[#312B5B]">
+                                <span className="text-sm font-bold text-[#1B2A27]">
                                     {otc.name}
                                 </span>
 
-                                {/* <span className="text-xs text-[#312B5B] mt-0.5">
+                                {/* <span className="text-xs text-[#1B2A27] mt-0.5">
                                     {otc.description}
                                 </span> */}
 
@@ -1172,7 +1172,7 @@ const PaymentPage: React.FC = () => {
                     {method === 'wallet' && (
                         <div>
                         
-                            <p className="p-2 text-xs font-bold text-[#312B5B]">
+                            <p className="p-2 text-xs font-bold text-[#1B2A27]">
                                 What will you use?
                             </p>
                         <div
@@ -1191,7 +1191,7 @@ const PaymentPage: React.FC = () => {
                             key={wallet.name}
                             className={`rounded-md text-xs transition-all duration-300 w-full lg:w-[98%] mx-auto overflow-hidden ${
                                 isSelected
-                                ? "border-[#312B5B] bg-[#F7F8FA] shadow-sm"
+                                ? "border-[#1B2A27] bg-[#F7F8FA] shadow-sm"
                                 : "border-transparent hover:bg-gray-50"
                             }`}
                             >
@@ -1201,7 +1201,7 @@ const PaymentPage: React.FC = () => {
                                 name="onlineMethod"
                                 checked={isSelected}
                                 onChange={() => setSelectedOnlineWallet(wallet.name)}
-                                className="w-4 h-4 accent-[#312B5B] shrink-0"
+                                className="w-4 h-4 accent-[#007C5E] shrink-0"
                                 />
 
                                 <div className="w-9 h-9 rounded flex items-center justify-center shrink-0 overflow-hidden">
@@ -1213,11 +1213,11 @@ const PaymentPage: React.FC = () => {
                                 </div>
 
                                 <div className="flex flex-col leading-tight">
-                                <span className="text-sm font-bold text-[#312B5B]">
+                                <span className="text-sm font-bold text-[#1B2A27]">
                                     {wallet.name}
                                 </span>
                                 {/* 
-                                <span className="text-xs text-[#312B5B] mt-0.5">
+                                <span className="text-xs text-[#1B2A27] mt-0.5">
                                     {wallet.description}
                                 </span> */}
 
@@ -1238,18 +1238,18 @@ const PaymentPage: React.FC = () => {
                     <div className="bg-[#F4F6F8] rounded-tr-xl rounded-tl-xl p-4 border border-gray-100 flex flex-col shadow-md"
                         
                     >
-                        <h3 className="text-center text-base font-bold tracking-wider text-[#312B5B] mb-8">Payment Summary</h3>
+                        <h3 className="text-center text-base font-bold tracking-wider text-[#1B2A27] mb-8">Payment Summary</h3>
                     
                         <div className="space-y-2 text-xs mb-4">
-                            <div className="flex justify-between text-[#312B5B]">
+                            <div className="flex justify-between text-[#1B2A27]">
                                 <span>Sub Total</span>
                                 <span className="font-medium">{amount}</span>
                             </div>
-                            <div className="flex justify-between text-[#312B5B]">
+                            <div className="flex justify-between text-[#1B2A27]">
                                 <span>Processing Fee</span>
                                 <span className="font-medium">₱{(PROCESSING_FEE).toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between text-[#312B5B]">
+                            <div className="flex justify-between text-[#1B2A27]">
                                 <span>System Fee</span>
                                 <span className="font-medium">₱{(SYSTEM_FEE).toFixed(2)}</span>
                             </div>
@@ -1258,8 +1258,8 @@ const PaymentPage: React.FC = () => {
                         <div className="border-t border-dashed border-[#6F7282] pt-3 mb-4">
                             <div className={`flex justify-between items-center ${
                                 totalAmount >= 100_000 ? 'flex-col gap-1' : 'flex-row'}`}>
-                                <span className="text-base font-bold text-[#312B5B] whitespace-nowrap">You are sending</span>
-                                <span className="text-base font-bold text-[#312B5B]">₱{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span className="text-base font-bold text-[#1B2A27] whitespace-nowrap">You are sending</span>
+                                <span className="text-base font-bold text-[#1B2A27]">₱{totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
                             <div className="border-t border-dashed border-[#6F7282] mt-4"/>
                         
@@ -1267,8 +1267,8 @@ const PaymentPage: React.FC = () => {
 
                         <div className="space-y-3 mb-5">
                             <div className="flex justify-between text-xs">
-                            <span className="text-[#312B5B]">Payment Method</span>
-                            <span className="font-bold text-[#312B5B]">{PAYMENT_METHODS.find(m => m.id === method)?.label}</span>
+                            <span className="text-[#1B2A27]">Payment Method</span>
+                            <span className="font-bold text-[#1B2A27]">{PAYMENT_METHODS.find(m => m.id === method)?.label}</span>
                             </div>
                         
                         </div>
@@ -1276,7 +1276,7 @@ const PaymentPage: React.FC = () => {
                     </div>
 
                     <div className='bg-white shadow-lg rounded-bl-lg rounded-br-lg p-5'>
-                        <p className="text-[11px] text-[#312B5B] text-center md:whitespace-nowrap">Make sure the browser bar displays <span className='text-[#312B5B] font-bold'>PulseTech</span></p>
+                        <p className="text-[11px] text-[#1B2A27] text-center md:whitespace-nowrap">Make sure the browser bar displays <span className='text-[#1B2A27] font-bold'>PulseTech</span></p>
                     </div>
                     </div>
                 </div> */}
@@ -1324,7 +1324,7 @@ const PaymentPage: React.FC = () => {
                     }}
                             className={`w-1/2 md:w-1/2 lg:w-1/3 py-2 rounded font-bold text-sm transition-all duration-300 shadow-md transform flex justify-center items-center
                     ${amount > 99 && !paymentLoading
-                        ? 'bg-linear-to-r from-[#2B3565] to-[#0171A3] text-white cursor-pointer hover:from-[#312B5B] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95'
+                        ? 'bg-[#202122] text-[#75EEA5] cursor-pointer hover:from-[#1B2A27] hover:to-[#0182B5] hover:shadow-lg hover:-translate-y-0.5 active:scale-95'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                         >
@@ -1338,7 +1338,7 @@ const PaymentPage: React.FC = () => {
                     onClick={() => setTestStatus(status as any)}
                     className={`px-3 py-1 rounded text-xs font-semibold border transition ${
                         testStatus === status
-                            ? "bg-[#312B5B] text-white border-[#312B5B]"
+                            ? "bg-[#1B2A27] text-white border-[#1B2A27]"
                             : "border-gray-300 text-gray-600 hover:bg-gray-100"
                     }`}
                 >
