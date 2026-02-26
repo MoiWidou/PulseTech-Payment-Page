@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Confirm from "../pages/Confirm";
 import NotFound from "../pages/NotFound";
 import StatusPage from "../pages/StatusPage";
+import Website from "../pages/Website";
 
 function App() {
 
@@ -14,7 +15,7 @@ function App() {
     <>
       <Router>
       <Routes>
-        <Route path="/" element={<NotFound />} />
+        <Route path="/" element={<Website />} />
         <Route path="/:merchant_username" element={<Landing />} />
         {/* <Route path="/:merchant_username/status/success" element={<SuccessModal />} />
         <Route path="/:merchant_username/status/failed" element={<FailedModal />} />
