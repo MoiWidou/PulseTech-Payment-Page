@@ -56,7 +56,7 @@ function StatusPage() {
     const [status, setStatus] = useState<string | null>(null); // <-- track payment status
 
     const Spinner = () => (
-        <span className="inline-block w-16 h-16 border-4 border-gray-300 border-t-[#312B5B] rounded-full animate-spin" />
+        <span className="inline-block w-8 h-8 border-4 border-white/30 border-t-green-300 rounded-full animate-spin" />
     );
 
     useEffect(() => {
