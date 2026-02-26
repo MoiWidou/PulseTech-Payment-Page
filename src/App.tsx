@@ -7,15 +7,20 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Confirm from "../pages/Confirm";
 import NotFound from "../pages/NotFound";
 import StatusPage from "../pages/StatusPage";
-import Website from "../pages/Website";
 
 function App() {
+
+    const website_base_url = import.meta.env.VITE_WEBSITE_URL;
+
+    if (window.location.pathname === "/") {
+        window.location.replace(website_base_url); // replaces history entry
+    }
 
   return (
     <>
       <Router>
       <Routes>
-        <Route path="/" element={<Website />} />
+        {/* <Route path="/" element={<Navigate to={`/${website_base_url}`} replace />} /> */}
         <Route path="/:merchant_username" element={<Landing />} />
         {/* <Route path="/:merchant_username/status/success" element={<SuccessModal />} />
         <Route path="/:merchant_username/status/failed" element={<FailedModal />} />
