@@ -13,4 +13,4 @@ phases:
   post_build:
     commands:
       - # Assume prod role first
-      - aws s3 sync ./dist s3://sandbox.payment.pulsetechnologies.xyz/
+      - aws s3 sync ./dist s3://payment.pulsetechnologies.xyz/
